@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  frontend:
+    image: 'hashicorpdemoapp/frontend:v0.0.3'
+    links:
+      - 'public-api:public-api'
+    volumes:
+      - type: bind
+        source: ./nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+    ports:
+      - '80:80'
+  public-api:
+    image: 'hashicorpdemoapp/public-api:v0.0.2'
+    environment:
+      - PRODUCT_API_URI=http://product-api:9090
+      - PAYMENT_API_URI=http://payments:8080
+    links:
+      - 'product-api:product-api'
+      - 'payments:payments'
+    ports:
+      - '8080:8080'
+  product-api:
+    image: 'hashicorpdemoapp/product-api:v0.0.11'
+    volumes:
+      - type: bind
+        source: ./conf.json
+        target: /conf.json
+    links:
+      - 'product-db:product-db'
+    ports:
+      - '9090:9090'
+  product-db:
+    image: 'hashicorpdemoapp/product-api-db:v0.0.11'
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_DB=products
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+  payments:
+    image: 'hashicorpdemoapp/payments:v0.0.3'
