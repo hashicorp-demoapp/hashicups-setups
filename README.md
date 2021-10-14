@@ -1,8 +1,9 @@
-## SE Hashicups Setup Options w/ Instructions
+## Hashicups Setup Options w/ Instructions
 
 Current Options
 
-* Docker Compose 
-* Local K8s deployment using kind and Consul
+* [Docker Compose](docker-compose-deployment/README.md) 
+* [Docker Compose w/ Consul and Envoy](docker-compose-consul/README.md)
+* [Local K8s deployment using kind and Consul](local-k8s-consul-deployment/README.md)
 
-Navigate to the appropriate folder and follow the readme. Docker compose will probably be the simplest in the beginning.
+Navigate to the appropriate folder and follow the README.
