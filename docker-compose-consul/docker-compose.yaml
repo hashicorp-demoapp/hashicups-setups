@@ -1,0 +1,156 @@
+version: '3.8'
+services:
+  consul_server_0:
+    image: consul:1.10.3
+    container_name: consul_server_0
+    command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
+    volumes:
+    - "./consul_config/server_config_0.hcl:/config/config.hcl"
+    ports:
+      - "8500:8500"
+      - "8600:8600/tcp"
+      - "8600:8600/udp"
+    networks:
+      - consul
+    labels: 
+      type: server
+
+  consul_server_1:
+    image: consul:1.10.3
+    container_name: consul_server_1
+    command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
+    volumes:
+    - "./consul_config/server_config_1.hcl:/config/config.hcl"
+    networks:
+      - consul
+    labels: 
+      type: server
+
+
+  consul_server_2:
+    image: consul:1.10.3
+    container_name: consul_server_2
+    command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
+    volumes:
+    - "./consul_config/server_config_2.hcl:/config/config.hcl"
+    networks:
+      - consul
+    labels: 
+      type: server
+
+
+  frontend:
+    image: 'frontend'
+    container_name: 'frontend'
+    command: ["./bin/install.sh"]
+    links:
+      - 'public-api:public-api'
+    volumes:
+      - type: bind
+        source: ./nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+      - "./install.sh:/bin/install.sh" 
+      - "./consul_config/frontend_config.hcl:/config/frontend_config.hcl"
+      - "./client_config/svc_frontend.hcl:/tmp/svc_frontend.hcl"
+    ports:
+      - '80:80'
+    environment:
+      - SERVICE=frontend
+      - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+    networks:
+      - consul
+    labels: 
+      type: client
+
+
+  public-api:
+    image: 'public-api'
+    container_name: public-api
+    links:
+      - 'product-api:product-api'
+      - 'payments:payments'
+    command: ["./bin/install.sh"]
+    volumes:
+      - "./consul_config/public_api_config.hcl:/config/public_api_config.hcl"
+      - "./client_config/svc_public_api.hcl:/config/svc_public_api.hcl"
+      - "./consul_config/default-intentions.hcl:/tmp/default-intentions.hcl"
+      - "./install.sh:/bin/install.sh"
+    environment:
+      - SERVICE=public-api
+      - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - PRODUCT_API_URI=http://localhost:9090
+      - PAYMENT_API_URI=http://localhost:1800
+    ports:
+      - '8080:8080'
+
+    networks:
+      - consul
+    labels: 
+      type: client
+
+  product-api:
+    image: 'product-api'
+    container_name: product-api
+    command: ["./bin/install.sh"]
+    volumes:
+      - type: bind
+        source: ./conf.json
+        target: /conf.json
+      - "./consul_config/product_api_config.hcl:/config/product_api_config.hcl"
+      - "./client_config/svc_product_api.hcl:/config/svc_product_api.hcl"
+      - "./install.sh:/bin/install.sh"
+    links:
+      - 'product-db:product-db'
+    ports:
+      - '9090:9090'
+    environment:
+      - SERVICE=product-api
+      - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+    networks:
+      - consul
+    depends_on:
+      - "product-db"
+    labels: 
+      type: client
+
+  product-db:
+    image: product-db
+    container_name: product-db
+    ports:
+      - '5432:5432'
+    volumes:
+      - "./consul_config/product_api_db_config.hcl:/config/product_api_db_config.hcl"
+      - "./client_config/svc_db.hcl:/tmp/svc_db.hcl"
+      - "/var/lib/postgresql/data"
+      - "./install.sh:/docker-entrypoint-initdb.d/install.sh"
+    environment:
+      - POSTGRES_DB=products
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - SERVICE=product-db
+      - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+    networks:
+      - consul 
+    labels: 
+      type: client 
+
+  payments:
+    image: 'payments'
+    container_name: payments
+    command: ["./bin/install.sh"]
+    volumes:
+      - "./consul_config/payment_config.hcl:/config/payment_config.hcl"
+      - "./client_config/svc_payments.hcl:/tmp/svc_payments.hcl"
+      - "./install.sh:/bin/install.sh"
+    environment:
+      - SERVICE=payments
+      - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+    networks:
+      - consul
+    labels: 
+      type: client
+
+
+networks:
+  consul:
+    driver: bridge
