@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
  cd ${PWD}/images/
  for folder in *; do
