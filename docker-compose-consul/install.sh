@@ -11,7 +11,7 @@ if [ $SERVICE == payments ]; then
   java -jar /bin/spring-boot-payments-0.0.12.jar > /spring_boot.out 2>&1 &
   sleep 3
   echo "Registering the service..."
-  if [ consul services register /tmp/svc_payments.hcl ]; then
+  if consul services register /tmp/svc_payments.hcl ; then
       nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1
    else 
       sleep 2
@@ -27,7 +27,7 @@ if [ $SERVICE == public-api ]; then
    nohup /bin/public-api > /api.out 2>&1 &
    sleep 3
 
-   if [ consul services register /config/svc_public_api.hcl ]; then
+   if consul services register /config/svc_public_api.hcl; then
       consul config write /tmp/default-intentions.hcl
       nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1
    else
@@ -43,7 +43,7 @@ fi
 if [ $SERVICE == product-api ]; then
    echo "Starting the Product-API application..."
    /bin/wait.sh
-   if [ consul services register /config/svc_product_api.hcl ]; then
+   if consul services register /config/svc_product_api.hcl; then
          nohup /bin/product-api > /api.out 2>&1 &
          nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
    else 
@@ -68,7 +68,7 @@ if [ $SERVICE == product-db ]; then
    echo "Registering the service..."
    sleep 2
    echo "Populate table.."
-   if [ psql postgres://postgres:password@localhost:5432/products?sslmode=disable -f /docker-entrypoint-initdb.d/products.sql ]; then
+   if psql postgres://postgres:password@localhost:5432/products?sslmode=disable -f /docker-entrypoint-initdb.d/products.sql; then
          consul services register /tmp/svc_db.hcl
          sudo nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
    else
