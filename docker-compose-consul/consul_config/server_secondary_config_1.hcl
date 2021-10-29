@@ -1,18 +1,20 @@
 data_dir = "/tmp/"
 log_level = "DEBUG"
-node_name = "consul_server_2"
-datacenter = "dc1"
+node_name = "consul_secondary_server_1"
+datacenter = "dc2"
 primary_datacenter = "dc1"
 
 server = true
 
-retry_join = [
-  "consul_server_0",
-  "consul_server_1",
+retry_join_wan = [
+  "consul_server_0:",
+  "consul_server_1:",
+  "consul_server_2"
 ]
 
-retry_join_wan = [
-  "consul_secondary_server_0"
+retry_join = [
+ "consul_secondary_server_0",
+ "consul_secondary_server_2"
 ]
 
 bootstrap_expect = 3
@@ -30,4 +32,4 @@ connect {
 }
 
 enable_central_service_config = true
-advertise_addr = "10.5.0.4"
+advertise_addr = "10.5.1.3"

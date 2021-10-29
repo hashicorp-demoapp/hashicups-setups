@@ -2,7 +2,7 @@ data_dir = "/tmp/"
 log_level = "DEBUG"
 node_name = "consul_server_0"
 datacenter = "dc1"
-
+primary_datacenter = "dc1"
 
 server = true
 
@@ -10,6 +10,11 @@ retry_join = [
   "consul_server_1:",
   "consul_server_2"
 ]
+
+retry_join_wan = [
+  "consul_secondary_server_0"
+]
+
 bootstrap_expect = 3
 ui = true
 
@@ -25,3 +30,4 @@ connect {
 }
 
 enable_central_service_config = true
+advertise_addr = "10.5.0.2"
