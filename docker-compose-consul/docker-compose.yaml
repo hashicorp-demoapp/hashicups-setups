@@ -3,7 +3,7 @@ services:
   consul_server_0:
     image: consul:1.10.3
     container_name: consul_server_0
-    command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
+    command: ["consul", "agent", "-config-dir=/config"]
     volumes:
     - "./consul_config/server_config_0.hcl:/config/config.hcl"
     ports:
@@ -19,7 +19,7 @@ services:
   consul_server_1:
     image: consul:1.10.3
     container_name: consul_server_1
-    command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
+    command: ["consul", "agent", "-config-dir=/config"]
     volumes:
     - "./consul_config/server_config_1.hcl:/config/config.hcl"
     networks:
@@ -32,7 +32,7 @@ services:
   consul_server_2:
     image: consul:1.10.3
     container_name: consul_server_2
-    command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
+    command: ["consul", "agent", "-config-dir=/config"]
     volumes:
     - "./consul_config/server_config_2.hcl:/config/config.hcl"
     networks:
@@ -55,6 +55,7 @@ services:
       - "./install.sh:/bin/install.sh" 
       - "./consul_config/frontend_config.hcl:/config/frontend_config.hcl"
       - "./client_config/svc_frontend.hcl:/tmp/svc_frontend.hcl"
+      - "./consul_config/prepared_query.hcl:/tmp/prepared_query.hcl"
     ports:
       - '80:80'
     environment:
@@ -133,6 +134,7 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=postgres
       - SERVICE=product-db
+      - SECONDARY=false
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
     networks:
       consul:
@@ -192,6 +194,56 @@ services:
         ipv4_address: 10.5.1.4
     labels: 
       type: server
+
+  frontend-secondary:
+    image: 'frontend'
+    container_name: 'frontend-secondary'
+    command: ["./bin/install.sh"]
+    volumes:
+      - type: bind
+        source: ./nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+      - "./install.sh:/bin/install.sh" 
+      - "./consul_config/frontend_config_secondary.hcl:/config/frontend_config.hcl"
+      - "./client_config/svc_frontend_secondary.hcl:/tmp/svc_frontend_secondary.hcl"
+      - "./consul_config/prepared_query_secondary.hcl:/tmp/prepared_query_secondary.hcl"
+    ports:
+      - '3000:80'
+    environment:
+      - SERVICE=frontend
+      - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+    networks:
+      consul:
+        ipv4_address: 10.5.1.5
+    labels: 
+      type: client
+
+  product-db-secondary:
+    image: product-db
+    container_name: product-db-secondary
+    command: ["./bin/install.sh"]
+    volumes:
+      - "./consul_config/product_api_db_config_secondary.hcl:/config/product_api_db_config.hcl"
+      - "./client_config/svc_db_secondary.hcl:/tmp/svc_db.hcl"
+      # - "./install.sh:/docker-entrypoint-initdb.d/install.sh"
+      - "./install.sh:/bin/install.sh" 
+      # - "./db.sh:/bin/db.sh"
+      - db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=products
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - SERVICE=product-db
+      - SECONDARY=true
+      - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+    networks:
+      consul:
+        ipv4_address: 10.5.1.8
+    labels: 
+      type: client 
+
+volumes:
+  db: {}
 
 
 networks:

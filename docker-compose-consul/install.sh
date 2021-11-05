@@ -55,35 +55,72 @@ if [ $SERVICE == product-api ]; then
 fi
 
 if [ $SERVICE == product-db ]; then
-   sudo mv /tmp/pg_hba.conf /var/lib/postgresql/data/
-   # Killing postgress
-   echo "Terminating postgress..."
-   pkill postgres
-   sleep 3
-   echo "Starting postgres DB.."
-   nohup postgres 2>&1 &
-   echo "Starting Consul..."
-   sudo mkdir -p /opt/consul
-   sudo nohup consul agent -config-dir=/config/ > /tmp/consul.out 2>&1 &
-   echo "Registering the service..."
-   sleep 2
-   echo "Populate table.."
-   if [ psql postgres://postgres:password@localhost:5432/products?sslmode=disable -f /docker-entrypoint-initdb.d/products.sql ]; then
-         consul services register /tmp/svc_db.hcl
-         sudo nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
-   else
+
+   if [ $SECONDARY == false ]; then
+      sudo mv /tmp/pg_hba.conf /var/lib/postgresql/data/
+      # Killing postgress
+      echo "Terminating postgress..."
+      pkill postgres
+      sleep 3
+      echo "Starting postgres DB.."
+      nohup postgres 2>&1 &
+      echo "Starting Consul..."
+      sudo mkdir -p /opt/consul
+      sudo nohup consul agent -config-dir=/config/ > /tmp/consul.out 2>&1 &
+      echo "Registering the service..."
       sleep 2
-      psql postgres://postgres:password@localhost:5432/products?sslmode=disable -f /docker-entrypoint-initdb.d/products.sql
-      consul services register /tmp/svc_db.hcl
-      sudo nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
+      echo "Populate table.."
+      
+         if [ psql postgres://postgres:password@localhost:5432/products?sslmode=disable -f /docker-entrypoint-initdb.d/products.sql ]; then
+               consul services register /tmp/svc_db.hcl
+               sudo nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
+         else
+            sleep 2
+            psql postgres://postgres:password@localhost:5432/products?sslmode=disable -f /docker-entrypoint-initdb.d/products.sql
+            consul services register /tmp/svc_db.hcl
+            sudo nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
+         fi
+
    fi
+
+   if [ $SECONDARY == true ]; then
+      # Killing postgress
+      echo "Terminating postgress..."
+      pkill postgres
+      sleep 3
+      echo "Starting postgres DB.."
+      rm -rfv tmp/data/
+      mkdir tmp/data/
+      su - postgres -c '/usr/lib/postgresql/13/bin/initdb -D tmp/data/'
+      sudo cp tmp/pg_hba.conf tmp/data/
+      su - postgres -c '/usr/lib/postgresql/13/bin/pg_ctl -D tmp/data/ start 2>&1 &'
+      echo "Starting Consul..."
+      sudo mkdir -p /opt/consul
+      sudo nohup consul agent -config-dir=/config/ > /tmp/consul.out 2>&1 &
+      echo "Registering the service..."
+      sleep 2
+      echo "Populate table.."
+      psql postgres://postgres:password@0.0.0.0:5432?sslmode=disable -f /docker-entrypoint-initdb.d/products.sql
+
+      echo "Starting Consul service"
+      consul services register /tmp/svc_db.hcl
+      sudo nohup consul connect envoy -sidecar-for ${SERVICE}-secondary > /tmp/proxy.log 2>&1
+   fi
+
 
 fi
 
 if [ $SERVICE == frontend ]; then
   echo "Starting the Frontend application..."
   sleep 3
-  consul services register /tmp/svc_frontend.hcl && \
+  if [ -f /tmp/svc_frontend_secondary.hcl ]; then
+      consul services register /tmp/svc_frontend_secondary.hcl && \
+      consul config write /tmp/prepared_query_secondary.hcl
+   else
+      echo "In primary"
+      consul services register /tmp/svc_frontend.hcl && \
+      consul config write /tmp/prepared_query.hcl
+  fi
   consul connect envoy -sidecar-for $SERVICE & > /tmp/proxy.log 2>&1
   sleep 1
   nginx

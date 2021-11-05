@@ -15,6 +15,8 @@ retry_join_wan = [
   "consul_secondary_server_0"
 ]
 
+encrypt="Pckc6EF8EUt19xrIaavtcRItHzJ3ZD2ZWtaNThc8FOs="
+
 bootstrap_expect = 3
 ui = true
 

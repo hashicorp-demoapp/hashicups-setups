@@ -12,7 +12,7 @@ enable_local_script_checks = true
 ports {
   grpc = 8502
 }
-
+encrypt="Pckc6EF8EUt19xrIaavtcRItHzJ3ZD2ZWtaNThc8FOs="
 service {
   name = "public-api"
   id = "public-api"

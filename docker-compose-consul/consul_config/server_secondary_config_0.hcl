@@ -16,7 +16,7 @@ retry_join = [
  "consul_secondary_server_1",
  "consul_secondary_server_2"
 ]
-
+encrypt = "Pckc6EF8EUt19xrIaavtcRItHzJ3ZD2ZWtaNThc8FOs="
 bootstrap_expect = 3
 ui = true
 
