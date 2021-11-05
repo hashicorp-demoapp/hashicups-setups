@@ -1,6 +1,6 @@
 service {
   name = "public-api"
-  id = "public-api"
+  id = "public-api-secondary"
   port = 8080
   connect {
     sidecar_service {
