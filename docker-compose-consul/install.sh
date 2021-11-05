@@ -42,16 +42,32 @@ fi
 
 if [ $SERVICE == product-api ]; then
    echo "Starting the Product-API application..."
-   /bin/wait.sh
-   if [ consul services register /config/svc_product_api.hcl ]; then
-         nohup /bin/product-api > /api.out 2>&1 &
-         nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
-   else 
-         sleep 1
-         consul services register /config/svc_product_api.hcl
-         nohup /bin/product-api > /api.out 2>&1 &
-         nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
-   fi
+    if [ $SECONDARY == false ]; then
+         if [ consul services register /config/svc_product_api.hcl ]; then
+            nohup /bin/product-api > /api.out 2>&1 &
+            nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
+         else 
+            sleep 1
+            consul services register /config/svc_product_api.hcl
+            nohup /bin/product-api > /api.out 2>&1 &
+            nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
+         fi
+    fi
+
+
+    if [ $SECONDARY == true ]; then
+         if [ consul services register /config/svc_product_api.hcl ]; then
+            nohup /bin/product-api > /api.out 2>&1 &
+            nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
+         else 
+            sleep 1
+            echo "echo after secondary sleep"
+            consul services register /config/svc_product_api.hcl
+            nohup /bin/product-api > /api.out 2>&1 &
+            nohup consul connect envoy -sidecar-for ${SERVICE}-secondary > /tmp/proxy.log 2>&1 
+         fi
+
+    fi
 fi
 
 if [ $SERVICE == product-db ]; then

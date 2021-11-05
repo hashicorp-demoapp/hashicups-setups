@@ -110,6 +110,7 @@ services:
       - '9090:9090'
     environment:
       - SERVICE=product-api
+      - SECONDARY=false
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
     networks:
       consul:
@@ -218,6 +219,31 @@ services:
     labels: 
       type: client
 
+  product-api-secondary:
+    image: 'product-api'
+    container_name: product-api-secondary
+    command: ["./bin/install.sh"]
+    volumes:
+      - type: bind
+        source: ./conf_secondary.json
+        target: /conf.json
+      - "./consul_config/product_api_config_secondary.hcl:/config/product_api_config.hcl"
+      - "./client_config/svc_product_api_secondary.hcl:/config/svc_product_api.hcl"
+      - "./install.sh:/bin/install.sh"
+    links:
+      - 'product-db-secondary:product-db-secondary'
+    environment:
+      - SERVICE=product-api
+      - SECONDARY=true
+      - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+    networks:
+      consul:
+        ipv4_address: 10.5.1.7
+    depends_on:
+      - "product-db-secondary"
+    labels: 
+      type: client
+
   product-db-secondary:
     image: product-db
     container_name: product-db-secondary
@@ -225,10 +251,7 @@ services:
     volumes:
       - "./consul_config/product_api_db_config_secondary.hcl:/config/product_api_db_config.hcl"
       - "./client_config/svc_db_secondary.hcl:/tmp/svc_db.hcl"
-      # - "./install.sh:/docker-entrypoint-initdb.d/install.sh"
       - "./install.sh:/bin/install.sh" 
-      # - "./db.sh:/bin/db.sh"
-      - db:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=products
       - POSTGRES_PASSWORD=password
@@ -241,9 +264,6 @@ services:
         ipv4_address: 10.5.1.8
     labels: 
       type: client 
-
-volumes:
-  db: {}
 
 
 networks:
