@@ -1,8 +1,8 @@
 Kind           = "service-resolver"
-Name           = "failover-dc1"
+Name           = "product-db"
 ConnectTimeout = "0s"
 Failover = {
   "*" = {
-    Datacenters = ["dc2"]
+    Datacenters = ["dc2", "dc1"]
   }
 }

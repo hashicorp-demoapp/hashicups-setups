@@ -16,7 +16,7 @@
                 exit 1
              fi
              echo "Docker build complete for $folder"
-             echo "------------------------------------\n"
+             echo "------------------------------------"
             cd ..
          fi
      fi

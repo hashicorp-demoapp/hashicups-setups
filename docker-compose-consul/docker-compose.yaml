@@ -55,7 +55,7 @@ services:
       - "./install.sh:/bin/install.sh" 
       - "./consul_config/frontend_config.hcl:/config/frontend_config.hcl"
       - "./client_config/svc_frontend.hcl:/tmp/svc_frontend.hcl"
-      - "./consul_config/prepared_query.hcl:/tmp/prepared_query.hcl"
+      - "./prepared_queries/frontend.hcl:/tmp/frontend.hcl"
     ports:
       - '80:80'
     environment:
@@ -85,6 +85,7 @@ services:
       - "./client_config/svc_public_api.hcl:/config/svc_public_api.hcl"
       - "./consul_config/default-intentions.hcl:/tmp/default-intentions.hcl"
       - "./install.sh:/bin/install.sh"
+      - "./prepared_queries/public-api.hcl:/tmp/public-api.hcl"
     environment:
       - SERVICE=public-api
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
@@ -109,6 +110,7 @@ services:
         target: /conf.json
       - "./consul_config/product_api_config.hcl:/config/product_api_config.hcl"
       - "./client_config/svc_product_api.hcl:/config/svc_product_api.hcl"
+      - "./prepared_queries/product-api.hcl:/tmp/product-api.hcl"
       - "./install.sh:/bin/install.sh"
     links:
       - 'product-db:product-db'
@@ -136,6 +138,7 @@ services:
       - "./client_config/svc_db.hcl:/tmp/svc_db.hcl"
       - "/var/lib/postgresql/data"
       - "./install.sh:/docker-entrypoint-initdb.d/install.sh"
+      - "./prepared_queries/product-db.hcl:/tmp/product-db.hcl"
     environment:
       - POSTGRES_DB=products
       - POSTGRES_PASSWORD=password
@@ -156,6 +159,7 @@ services:
     volumes:
       - "./consul_config/payment_config.hcl:/config/payment_config.hcl"
       - "./client_config/svc_payments.hcl:/tmp/svc_payments.hcl"
+      - "./prepared_queries/payments.hcl:/tmp/payments.hcl"
       - "./install.sh:/bin/install.sh"
     environment:
       - SERVICE=payments
@@ -214,7 +218,7 @@ services:
       - "./install.sh:/bin/install.sh" 
       - "./consul_config/frontend_config_secondary.hcl:/config/frontend_config.hcl"
       - "./client_config/svc_frontend_secondary.hcl:/tmp/svc_frontend_secondary.hcl"
-      - "./consul_config/prepared_query_secondary.hcl:/tmp/prepared_query_secondary.hcl"
+      - "./prepared_queries/frontend.hcl:/tmp/frontend.hcl"
     ports:
       - '3000:80'
     environment:
@@ -235,23 +239,19 @@ services:
   public-api-secondary:
     image: 'public-api'
     container_name: public-api-secondary
-    # links:
-    #   - 'product-api:product-api'
-    #   - 'payments:payments'
     command: ["./bin/install.sh"]
     volumes:
       - "./consul_config/public_api_config_secondary.hcl:/config/public_api_config.hcl"
       - "./client_config/svc_public_api_secondary.hcl:/config/svc_public_api.hcl"
       - "./consul_config/default-intentions.hcl:/tmp/default-intentions.hcl"
       - "./install.sh:/bin/install.sh"
+      - "./prepared_queries/public-api.hcl:/tmp/public-api.hcl"
     environment:
       - SERVICE=public-api
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
       - PRODUCT_API_URI=http://localhost:9090
       - PAYMENT_API_URI=http://localhost:1800
       - SECONDARY=true
-    # ports:
-    #   - '8080:8080'
     networks:
       consul:
         ipv4_address: 10.5.1.6
@@ -268,6 +268,7 @@ services:
         target: /conf.json
       - "./consul_config/product_api_config_secondary.hcl:/config/product_api_config.hcl"
       - "./client_config/svc_product_api_secondary.hcl:/config/svc_product_api.hcl"
+      - "./prepared_queries/product-api.hcl:/tmp/product-api.hcl"
       - "./install.sh:/bin/install.sh"
     links:
       - 'product-db-secondary:product-db-secondary'
@@ -290,7 +291,8 @@ services:
     volumes:
       - "./consul_config/product_api_db_config_secondary.hcl:/config/product_api_db_config.hcl"
       - "./client_config/svc_db_secondary.hcl:/tmp/svc_db.hcl"
-      - "./install.sh:/bin/install.sh" 
+      - "./install.sh:/bin/install.sh"
+      - "./prepared_queries/product-db.hcl:/tmp/product-db.hcl"
     environment:
       - POSTGRES_DB=products
       - POSTGRES_PASSWORD=password
@@ -311,6 +313,7 @@ services:
     volumes:
       - "./consul_config/payment_config_secondary.hcl:/config/payment_config.hcl"
       - "./client_config/svc_payments_secondary.hcl:/tmp/svc_payments.hcl"
+      - "./prepared_queries/payments.hcl:/tmp/payments.hcl"
       - "./install.sh:/bin/install.sh"
     environment:
       - SERVICE=payments

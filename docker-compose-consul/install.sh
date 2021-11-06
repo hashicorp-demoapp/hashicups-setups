@@ -12,21 +12,24 @@ if [ $SERVICE == payments ]; then
   sleep 3
   echo "Registering the service..."
   if [ consul services register /tmp/svc_payments.hcl ]; then
-
       if [ $SECONDARY == false ]; then 
+         consul config write /tmp/payments.hcl
          nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1
       else
+         consul config write /tmp/payments.hcl
          nohup consul connect envoy -sidecar-for ${SERVICE}-secondary > /tmp/proxy.log 2>&1
       fi
       
    else 
       sleep 2
       consul services register /tmp/svc_payments.hcl
+      consul config write /tmp/payments.hcl
         if [ $SECONDARY == false ]; then 
          nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1
          else
             nohup consul connect envoy -sidecar-for ${SERVICE}-secondary > /tmp/proxy.log 2>&1
         fi
+        
   fi
   
 fi
@@ -40,20 +43,24 @@ if [ $SERVICE == public-api ]; then
    if [ consul services register /config/svc_public_api.hcl ]; then
       consul config write /tmp/default-intentions.hcl
          if [ $SECONDARY == false ]; then 
+            consul config write /tmp/public-api.hcl
             nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1
          else
+            consul config write /tmp/public-api.hcl
             nohup consul connect envoy -sidecar-for ${SERVICE}-secondary > /tmp/proxy.log 2>&1
          fi
    else
       sleep 2
       consul services register /config/svc_public_api.hcl
       consul config write /tmp/default-intentions.hcl
+      consul config write /tmp/public-api.hcl
       if [ $SECONDARY == false ]; then 
          nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1
       else
          nohup consul connect envoy -sidecar-for ${SERVICE}-secondary > /tmp/proxy.log 2>&1
       fi
    fi
+   
 
 fi
 
@@ -63,11 +70,13 @@ if [ $SERVICE == product-api ]; then
     if [ $SECONDARY == false ]; then
          if [ consul services register /config/svc_product_api.hcl ]; then
             nohup /bin/product-api > /api.out 2>&1 &
+            consul config write /tmp/product-api.hcl
             nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
          else 
             sleep 1
             consul services register /config/svc_product_api.hcl
             nohup /bin/product-api > /api.out 2>&1 &
+            consul config write /tmp/product-api.hcl
             nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
          fi
     fi
@@ -76,12 +85,14 @@ if [ $SERVICE == product-api ]; then
     if [ $SECONDARY == true ]; then
          if [ consul services register /config/svc_product_api.hcl ]; then
             nohup /bin/product-api > /api.out 2>&1 &
+            consul config write /tmp/product-api.hcl
             nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
          else 
             sleep 1
             echo "echo after secondary sleep"
             consul services register /config/svc_product_api.hcl
             nohup /bin/product-api > /api.out 2>&1 &
+            consul config write /tmp/product-api.hcl
             nohup consul connect envoy -sidecar-for ${SERVICE}-secondary > /tmp/proxy.log 2>&1 
          fi
 
@@ -107,11 +118,13 @@ if [ $SERVICE == product-db ]; then
       
          if [ psql postgres://postgres:password@localhost:5432/products?sslmode=disable -f /docker-entrypoint-initdb.d/products.sql ]; then
                consul services register /tmp/svc_db.hcl
+               consul config write /tmp/product-db.hcl
                sudo nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
          else
             sleep 2
             psql postgres://postgres:password@localhost:5432/products?sslmode=disable -f /docker-entrypoint-initdb.d/products.sql
             consul services register /tmp/svc_db.hcl
+            consul config write /tmp/product-db.hcl
             sudo nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
          fi
 
@@ -138,6 +151,7 @@ if [ $SERVICE == product-db ]; then
 
       echo "Starting Consul service"
       consul services register /tmp/svc_db.hcl
+      consul config write /tmp/product-db.hcl
       sudo nohup consul connect envoy -sidecar-for ${SERVICE}-secondary > /tmp/proxy.log 2>&1
    fi
 
@@ -149,11 +163,11 @@ if [ $SERVICE == frontend ]; then
   sleep 3
   if [ -f /tmp/svc_frontend_secondary.hcl ]; then
       consul services register /tmp/svc_frontend_secondary.hcl && \
-      consul config write /tmp/prepared_query_secondary.hcl
+      consul config write /tmp/frontend_secondary.hcl
    else
       echo "In primary"
       consul services register /tmp/svc_frontend.hcl && \
-      consul config write /tmp/prepared_query.hcl
+      consul config write /tmp/frontend.hcl
   fi
    
    if [ $SECONDARY == false ]; then 

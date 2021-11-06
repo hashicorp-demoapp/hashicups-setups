@@ -9,6 +9,7 @@ retry_join = [
     ]
 encrypt = "Pckc6EF8EUt19xrIaavtcRItHzJ3ZD2ZWtaNThc8FOs="
 enable_local_script_checks = true
+enable_central_service_config = true
 ports {
   grpc = 8502
 }
