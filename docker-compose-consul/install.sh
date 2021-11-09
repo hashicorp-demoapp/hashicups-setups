@@ -4,6 +4,7 @@ if [ $SERVICE != product-db ]; then
    mkdir -p /opt/consul
    echo "Starting Consul..."
    nohup consul agent -config-dir=/config/ > /tmp/consul.out 2>&1 &
+   sleep 5
 fi
 
 if [ $SERVICE == payments ]; then
@@ -100,6 +101,7 @@ if [ $SERVICE == product-api ]; then
 fi
 
 if [ $SERVICE == product-db ]; then
+   sleep 5
 
    if [ $SECONDARY == false ]; then
       sudo mv /tmp/pg_hba.conf /var/lib/postgresql/data/

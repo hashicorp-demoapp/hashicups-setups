@@ -13,3 +13,13 @@ enable_central_service_config = true
 ports {
   grpc = 8502
 }
+
+auto_encrypt {
+    tls = true
+}
+
+verify_incoming        = false
+verify_outgoing        = true
+verify_server_hostname = true
+
+ca_file = "consul/config/certs/consul-agent-ca.pem"

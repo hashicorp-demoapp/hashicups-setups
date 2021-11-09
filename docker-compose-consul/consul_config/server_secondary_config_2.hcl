@@ -31,5 +31,18 @@ connect {
   enabled = true
 }
 
+auto_encrypt {
+    allow_tls = true
+}
+
+verify_incoming        = false
+verify_outgoing        = true
+verify_server_hostname = true
+verify_incoming_rpc    = true
+
 enable_central_service_config = true
 advertise_addr = "10.5.1.4"
+
+ca_file = "/consul/config/certs/consul-agent-ca.pem",
+cert_file = "/consul/config/certs/dc2-server-consul-2.pem",
+key_file = "/consul/config/certs/dc2-server-consul-2-key.pem"

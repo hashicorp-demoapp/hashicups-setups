@@ -60,3 +60,17 @@ docker-compose up --no-recreate
 ```
 
 **TIP**: Use the command `docker logs [container_name]` to debug container start issues.
+
+
+The Consul certificates were generated with the following commands:
+
+```shell
+consul tls ca create
+consul tls cert create -server -dc dc1 -additional-dnsname="*.dc2.consul" -additional-dnsname="consul_server_0"
+consul tls cert create -server -dc dc1 -additional-dnsname="*.dc2.consul" -additional-dnsname="consul_server_1"
+consul tls cert create -server -dc dc1 -additional-dnsname="*.dc2.consul" -additional-dnsname="consul_server_2"
+consul tls cert create -server -dc dc2 -additional-dnsname="*.dc1.consul" -additional-dnsname="consul_secondary_server_1"
+consul tls cert create -server -dc dc2 -additional-dnsname="*.dc1.consul" -additional-dnsname="consul_secondary_server_1"
+consul tls cert create -server -dc dc2 -additional-dnsname="*.dc1.consul" -additional-dnsname="consul_secondary_server_1"
+
+```

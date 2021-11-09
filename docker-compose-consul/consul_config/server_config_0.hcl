@@ -18,7 +18,10 @@ retry_join_wan = [
 encrypt="Pckc6EF8EUt19xrIaavtcRItHzJ3ZD2ZWtaNThc8FOs="
 
 bootstrap_expect = 3
-ui = true
+
+ui_config {
+ enabled = true
+} 
 
 bind_addr = "0.0.0.0"
 client_addr = "0.0.0.0"
@@ -31,5 +34,18 @@ connect {
   enabled = true
 }
 
+auto_encrypt {
+    allow_tls = true
+}
+
+verify_incoming        = false
+verify_outgoing        = true
+verify_server_hostname = true
+verify_incoming_rpc    = true
+
 enable_central_service_config = true
 advertise_addr = "10.5.0.2"
+
+ca_file = "/consul/config/certs/consul-agent-ca.pem",
+cert_file = "/consul/config/certs/dc1-server-consul-0.pem",
+key_file = "/consul/config/certs/dc1-server-consul-0-key.pem"
