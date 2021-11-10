@@ -1,7 +1,7 @@
 datacenter = "dc2"
 data_dir =  "/opt/consul"
 log_level = "INFO"
-node_name = "product-db-1"
+node_name = "product-db-secondary0"
 retry_join = [
     "consul_secondary_server_0",
     "consul_secondary_server_1",

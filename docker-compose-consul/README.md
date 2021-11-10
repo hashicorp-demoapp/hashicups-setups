@@ -27,11 +27,11 @@ To start Docker compose use the command below:
 docker-compose up --detach
 ```
 
-**NOTE**: It takes approximately 5-10 seconds for all services to come up.
+**NOTE**: It takes approximately 10-15 seconds for all services to come up.
 
 Visit the Consul dashboard at http://localhost:8500 and ensure all services are up. 
 
-Next, go to http://localhost to visit HashiCups.
+Next, go to http://localhost:80 to visit HashiCups.
 
 Author: Karl Cardenas
 
