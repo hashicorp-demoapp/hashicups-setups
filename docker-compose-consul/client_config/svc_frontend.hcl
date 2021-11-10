@@ -2,7 +2,7 @@ service {
   name = "frontend"
   id = "frontend"
   port = 80
- 
+
   connect {
     sidecar_service {
       proxy {

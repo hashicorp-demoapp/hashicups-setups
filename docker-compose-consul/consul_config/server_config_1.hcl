@@ -49,3 +49,19 @@ advertise_addr = "10.5.0.3"
 ca_file = "/consul/config/certs/consul-agent-ca.pem",
 cert_file = "/consul/config/certs/dc1-server-consul-1.pem",
 key_file = "/consul/config/certs/dc1-server-consul-1-key.pem"
+
+performance {
+  raft_multiplier = 2
+}
+
+acl = {
+  enabled = true
+  default_policy = "deny"
+  enable_token_persistence = true
+  enable_token_replication = true
+  down_policy = "extend-cache"
+
+  tokens = {
+    master = "20d16fb2-9bd6-d238-bfdc-1fab80177667"
+  }
+}

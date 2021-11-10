@@ -65,6 +65,7 @@ services:
     environment:
       - SERVICE=frontend
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667 
       - SECONDARY=false
     depends_on:
       - "consul_server_0"
@@ -94,6 +95,7 @@ services:
     environment:
       - SERVICE=public-api
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667 
       - PRODUCT_API_URI=http://localhost:9090
       - PAYMENT_API_URI=http://localhost:1800
       - SECONDARY=false
@@ -130,6 +132,7 @@ services:
       - SERVICE=product-api
       - SECONDARY=false
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667 
     networks:
       consul:
         ipv4_address: 10.5.0.7
@@ -152,7 +155,7 @@ services:
       - "/var/lib/postgresql/data"
       - "./install.sh:/docker-entrypoint-initdb.d/install.sh"
       - "./resolvers_config/product-db.hcl:/tmp/product-db.hcl"
-      - ./certificates/consul-agent-ca.pem:/consul/config/certs/consul-agent-ca.pem
+      - "./certificates/consul-agent-ca.pem:/consul/config/certs/consul-agent-ca.pem"
     environment:
       - POSTGRES_DB=products
       - POSTGRES_PASSWORD=password
@@ -160,6 +163,7 @@ services:
       - SERVICE=product-db
       - SECONDARY=false
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667 
     depends_on:
       - "consul_server_0"
       - "consul_server_1"
@@ -183,6 +187,7 @@ services:
     environment:
       - SERVICE=payments
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667 
       - SECONDARY=false
     depends_on:
       - "consul_server_0"
@@ -251,11 +256,15 @@ services:
     environment:
       - SERVICE=frontend
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
       - SECONDARY=true
     depends_on:
       - "consul_secondary_server_0"
       - "consul_secondary_server_1"
       - "consul_secondary_server_2"
+      - "consul_server_0"
+      - "consul_server_1"
+      - "consul_server_2"
 
     networks:
       consul:
@@ -277,6 +286,7 @@ services:
     environment:
       - SERVICE=public-api
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
       - PRODUCT_API_URI=http://localhost:9090
       - PAYMENT_API_URI=http://localhost:1800
       - SECONDARY=true
@@ -284,6 +294,9 @@ services:
       - "consul_secondary_server_0"
       - "consul_secondary_server_1"
       - "consul_secondary_server_2"
+      - "consul_server_0"
+      - "consul_server_1"
+      - "consul_server_2"
     networks:
       consul:
         ipv4_address: 10.5.1.6
@@ -309,6 +322,7 @@ services:
       - SERVICE=product-api
       - SECONDARY=true
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
     networks:
       consul:
         ipv4_address: 10.5.1.7
@@ -317,6 +331,9 @@ services:
       - "consul_secondary_server_0"
       - "consul_secondary_server_1"
       - "consul_secondary_server_2"
+      - "consul_server_0"
+      - "consul_server_1"
+      - "consul_server_2"
     labels: 
       type: client
 
@@ -337,10 +354,14 @@ services:
       - SERVICE=product-db
       - SECONDARY=true
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
     depends_on:
       - "consul_secondary_server_0"
       - "consul_secondary_server_1"
       - "consul_secondary_server_2"
+      - "consul_server_0"
+      - "consul_server_1"
+      - "consul_server_2"
     networks:
       consul:
         ipv4_address: 10.5.1.8
@@ -361,10 +382,14 @@ services:
       - SERVICE=payments
       - SECONDARY=true
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
     depends_on:
       - "consul_secondary_server_0"
       - "consul_secondary_server_1"
       - "consul_secondary_server_2"
+      - "consul_server_0"
+      - "consul_server_1"
+      - "consul_server_2"
     networks:
       consul:
         ipv4_address: 10.5.1.9

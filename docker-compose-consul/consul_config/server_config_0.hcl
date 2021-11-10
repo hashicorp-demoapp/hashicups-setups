@@ -38,7 +38,7 @@ auto_encrypt {
     allow_tls = true
 }
 
-verify_incoming        = false
+verify_incoming        = true
 verify_outgoing        = true
 verify_server_hostname = true
 verify_incoming_rpc    = true
@@ -49,3 +49,20 @@ advertise_addr = "10.5.0.2"
 ca_file = "/consul/config/certs/consul-agent-ca.pem",
 cert_file = "/consul/config/certs/dc1-server-consul-0.pem",
 key_file = "/consul/config/certs/dc1-server-consul-0-key.pem"
+
+performance {
+  raft_multiplier = 2
+}
+
+
+acl = {
+  enabled = true
+  default_policy = "deny"
+  enable_token_persistence = true
+  enable_token_replication = true
+  down_policy = "extend-cache"
+
+  tokens = {
+    master = "20d16fb2-9bd6-d238-bfdc-1fab80177667"
+  }
+}

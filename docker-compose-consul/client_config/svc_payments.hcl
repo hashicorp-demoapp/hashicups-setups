@@ -5,8 +5,7 @@ service {
  
   # Required in order to allow registration of a sidecar
   connect { 
-    sidecar_service {
-    }
+    sidecar_service {}
   }
 }
 

@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# This is ensure sufficient time is provided for ACLs to replicate to the secondary Consul DC
+if [ $SECONDARY == true ]; then
+   sleep 8
+fi
+
 if [ $SERVICE != product-db ]; then
    mkdir -p /opt/consul
    echo "Starting Consul..."
@@ -101,8 +106,7 @@ if [ $SERVICE == product-api ]; then
 fi
 
 if [ $SERVICE == product-db ]; then
-   sleep 5
-
+sleep 5
    if [ $SECONDARY == false ]; then
       sudo mv /tmp/pg_hba.conf /var/lib/postgresql/data/
       # Killing postgress
@@ -117,17 +121,16 @@ if [ $SERVICE == product-db ]; then
       echo "Registering the service..."
       sleep 2
       echo "Populate table.."
-      
          if [ psql postgres://postgres:password@localhost:5432/products?sslmode=disable -f /docker-entrypoint-initdb.d/products.sql ]; then
                consul services register /tmp/svc_db.hcl
                consul config write /tmp/product-db.hcl
-               sudo nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
+               sudo nohup consul connect envoy -sidecar-for $SERVICE -token=$CONSUL_HTTP_TOKEN > /tmp/proxy.log 2>&1
          else
             sleep 2
             psql postgres://postgres:password@localhost:5432/products?sslmode=disable -f /docker-entrypoint-initdb.d/products.sql
             consul services register /tmp/svc_db.hcl
             consul config write /tmp/product-db.hcl
-            sudo nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1 
+            sudo nohup consul connect envoy -sidecar-for $SERVICE -token=$CONSUL_HTTP_TOKEN > /tmp/proxy.log 2>&1
          fi
 
    fi
@@ -154,7 +157,8 @@ if [ $SERVICE == product-db ]; then
       echo "Starting Consul service"
       consul services register /tmp/svc_db.hcl
       consul config write /tmp/product-db.hcl
-      sudo nohup consul connect envoy -sidecar-for ${SERVICE}-secondary > /tmp/proxy.log 2>&1
+
+      sudo nohup consul connect envoy -sidecar-for ${SERVICE}-secondary -token=$CONSUL_HTTP_TOKEN > /tmp/proxy.log 2>&1
    fi
 
 

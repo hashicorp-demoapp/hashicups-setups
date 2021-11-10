@@ -23,3 +23,15 @@ verify_outgoing        = true
 verify_server_hostname = true
 
 ca_file = "consul/config/certs/consul-agent-ca.pem"
+
+acl = {
+  enabled = true
+  default_policy = "deny"
+  enable_token_persistence = true
+  enable_token_replication = true
+  down_policy = "extend-cache"
+
+  tokens = {
+    default = "20d16fb2-9bd6-d238-bfdc-1fab80177667"
+  }
+}
