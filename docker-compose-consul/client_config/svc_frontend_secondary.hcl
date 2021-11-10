@@ -1,8 +1,8 @@
 service {
   name = "frontend"
-  id = "frontend"
+  id = "frontend-secondary"
   port = 80
-
+ 
   connect {
     sidecar_service {
       proxy {
@@ -16,7 +16,7 @@ service {
     }
   }
    check {
-     id =  "Frontend",
+     id =  "Frontend-Secondary",
      name = "Frontend status check",
      service_id = "frontend",
      tcp  = "localhost:80",

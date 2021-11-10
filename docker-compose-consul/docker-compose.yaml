@@ -3,26 +3,30 @@ services:
   consul_server_0:
     image: consul:1.10.3
     container_name: consul_server_0
-    command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
+    command: ["consul", "agent", "-config-dir=/config"]
     volumes:
     - "./consul_config/server_config_0.hcl:/config/config.hcl"
+    - ./certificates/:/consul/config/certs/
     ports:
       - "8500:8500"
       - "8600:8600/tcp"
       - "8600:8600/udp"
     networks:
-      - consul
+      consul:
+        ipv4_address: 10.5.0.2
     labels: 
       type: server
 
   consul_server_1:
     image: consul:1.10.3
     container_name: consul_server_1
-    command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
+    command: ["consul", "agent", "-config-dir=/config"]
     volumes:
     - "./consul_config/server_config_1.hcl:/config/config.hcl"
+    - ./certificates/:/consul/config/certs/
     networks:
-      - consul
+      consul:
+        ipv4_address: 10.5.0.3
     labels: 
       type: server
 
@@ -30,11 +34,13 @@ services:
   consul_server_2:
     image: consul:1.10.3
     container_name: consul_server_2
-    command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
+    command: ["consul", "agent", "-config-dir=/config"]
     volumes:
     - "./consul_config/server_config_2.hcl:/config/config.hcl"
+    - ./certificates/:/consul/config/certs/
     networks:
-      - consul
+      consul:
+        ipv4_address: 10.5.0.4
     labels: 
       type: server
 
@@ -52,13 +58,22 @@ services:
       - "./install.sh:/bin/install.sh" 
       - "./consul_config/frontend_config.hcl:/config/frontend_config.hcl"
       - "./client_config/svc_frontend.hcl:/tmp/svc_frontend.hcl"
+      - "./resolvers_config/frontend.hcl:/tmp/frontend.hcl"
+      - ./certificates/consul-agent-ca.pem:/consul/config/certs/consul-agent-ca.pem
     ports:
       - '80:80'
     environment:
       - SERVICE=frontend
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667 
+      - SECONDARY=false
+    depends_on:
+      - "consul_server_0"
+      - "consul_server_1"
+      - "consul_server_2"
     networks:
-      - consul
+      consul:
+        ipv4_address: 10.5.0.5
     labels: 
       type: client
 
@@ -75,16 +90,24 @@ services:
       - "./client_config/svc_public_api.hcl:/config/svc_public_api.hcl"
       - "./consul_config/default-intentions.hcl:/tmp/default-intentions.hcl"
       - "./install.sh:/bin/install.sh"
+      - "./resolvers_config/public-api.hcl:/tmp/public-api.hcl"
+      - ./certificates/consul-agent-ca.pem:/consul/config/certs/consul-agent-ca.pem
     environment:
       - SERVICE=public-api
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667 
       - PRODUCT_API_URI=http://localhost:9090
       - PAYMENT_API_URI=http://localhost:1800
+      - SECONDARY=false
     ports:
       - '8080:8080'
-
+    depends_on:
+      - "consul_server_0"
+      - "consul_server_1"
+      - "consul_server_2"
     networks:
-      - consul
+      consul:
+        ipv4_address: 10.5.0.6
     labels: 
       type: client
 
@@ -98,18 +121,26 @@ services:
         target: /conf.json
       - "./consul_config/product_api_config.hcl:/config/product_api_config.hcl"
       - "./client_config/svc_product_api.hcl:/config/svc_product_api.hcl"
+      - "./resolvers_config/product-api.hcl:/tmp/product-api.hcl"
       - "./install.sh:/bin/install.sh"
+      - ./certificates/consul-agent-ca.pem:/consul/config/certs/consul-agent-ca.pem
     links:
       - 'product-db:product-db'
     ports:
       - '9090:9090'
     environment:
       - SERVICE=product-api
+      - SECONDARY=false
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667 
     networks:
-      - consul
+      consul:
+        ipv4_address: 10.5.0.7
     depends_on:
       - "product-db"
+      - "consul_server_0"
+      - "consul_server_1"
+      - "consul_server_2"
     labels: 
       type: client
 
@@ -123,14 +154,23 @@ services:
       - "./client_config/svc_db.hcl:/tmp/svc_db.hcl"
       - "/var/lib/postgresql/data"
       - "./install.sh:/docker-entrypoint-initdb.d/install.sh"
+      - "./resolvers_config/product-db.hcl:/tmp/product-db.hcl"
+      - "./certificates/consul-agent-ca.pem:/consul/config/certs/consul-agent-ca.pem"
     environment:
       - POSTGRES_DB=products
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=postgres
       - SERVICE=product-db
+      - SECONDARY=false
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667 
+    depends_on:
+      - "consul_server_0"
+      - "consul_server_1"
+      - "consul_server_2"
     networks:
-      - consul 
+      consul:
+        ipv4_address: 10.5.0.8
     labels: 
       type: client 
 
@@ -141,12 +181,218 @@ services:
     volumes:
       - "./consul_config/payment_config.hcl:/config/payment_config.hcl"
       - "./client_config/svc_payments.hcl:/tmp/svc_payments.hcl"
+      - "./resolvers_config/payments.hcl:/tmp/payments.hcl"
       - "./install.sh:/bin/install.sh"
+      - ./certificates/consul-agent-ca.pem:/consul/config/certs/consul-agent-ca.pem
     environment:
       - SERVICE=payments
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667 
+      - SECONDARY=false
+    depends_on:
+      - "consul_server_0"
+      - "consul_server_1"
+      - "consul_server_2"
     networks:
-      - consul
+      consul:
+        ipv4_address: 10.5.0.9
+    labels: 
+      type: client
+
+  consul_secondary_server_0:
+    image: consul:1.10.3
+    container_name: consul_secondary_server_0
+    command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
+    volumes:
+    - "./consul_config/server_secondary_config_0.hcl:/config/config.hcl"
+    - ./certificates/:/consul/config/certs/
+    networks:
+      consul:
+        ipv4_address: 10.5.1.2
+    labels: 
+      type: server
+
+  consul_secondary_server_1:
+    image: consul:1.10.3
+    container_name: consul_secondary_server_1
+    command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
+    volumes:
+    - "./consul_config/server_secondary_config_1.hcl:/config/config.hcl"
+    - ./certificates/:/consul/config/certs/
+    networks:
+      consul:
+        ipv4_address: 10.5.1.3
+    labels: 
+      type: server
+
+  consul_secondary_server_2:
+    image: consul:1.10.3
+    container_name: consul_secondary_server_2
+    command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
+    volumes:
+    - "./consul_config/server_secondary_config_2.hcl:/config/config.hcl"
+    - ./certificates/:/consul/config/certs/
+    networks:
+      consul:
+        ipv4_address: 10.5.1.4
+    labels: 
+      type: server
+
+  frontend-secondary:
+    image: 'frontend'
+    container_name: 'frontend-secondary'
+    command: ["./bin/install.sh"]
+    volumes:
+      - type: bind
+        source: ./nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+      - "./install.sh:/bin/install.sh" 
+      - "./consul_config/frontend_config_secondary.hcl:/config/frontend_config.hcl"
+      - "./client_config/svc_frontend_secondary.hcl:/tmp/svc_frontend_secondary.hcl"
+      - "./resolvers_config/frontend.hcl:/tmp/frontend.hcl"
+      - ./certificates/:/consul/config/certs/
+    ports:
+      - '3000:80'
+    environment:
+      - SERVICE=frontend
+      - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
+      - SECONDARY=true
+    depends_on:
+      - "consul_secondary_server_0"
+      - "consul_secondary_server_1"
+      - "consul_secondary_server_2"
+      - "consul_server_0"
+      - "consul_server_1"
+      - "consul_server_2"
+
+    networks:
+      consul:
+        ipv4_address: 10.5.1.5
+    labels: 
+      type: client
+
+  public-api-secondary:
+    image: 'public-api'
+    container_name: public-api-secondary
+    command: ["./bin/install.sh"]
+    volumes:
+      - "./consul_config/public_api_config_secondary.hcl:/config/public_api_config.hcl"
+      - "./client_config/svc_public_api_secondary.hcl:/config/svc_public_api.hcl"
+      - "./consul_config/default-intentions.hcl:/tmp/default-intentions.hcl"
+      - "./install.sh:/bin/install.sh"
+      - "./resolvers_config/public-api.hcl:/tmp/public-api.hcl"
+      - ./certificates/:/consul/config/certs/
+    environment:
+      - SERVICE=public-api
+      - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
+      - PRODUCT_API_URI=http://localhost:9090
+      - PAYMENT_API_URI=http://localhost:1800
+      - SECONDARY=true
+    depends_on:
+      - "consul_secondary_server_0"
+      - "consul_secondary_server_1"
+      - "consul_secondary_server_2"
+      - "consul_server_0"
+      - "consul_server_1"
+      - "consul_server_2"
+    networks:
+      consul:
+        ipv4_address: 10.5.1.6
+    labels: 
+      type: client
+
+  product-api-secondary:
+    image: 'product-api'
+    container_name: product-api-secondary
+    command: ["./bin/install.sh"]
+    volumes:
+      - type: bind
+        source: ./conf_secondary.json
+        target: /conf.json
+      - "./consul_config/product_api_config_secondary.hcl:/config/product_api_config.hcl"
+      - "./client_config/svc_product_api_secondary.hcl:/config/svc_product_api.hcl"
+      - "./resolvers_config/product-api.hcl:/tmp/product-api.hcl"
+      - "./install.sh:/bin/install.sh"
+      - ./certificates/:/consul/config/certs/
+    links:
+      - 'product-db-secondary:product-db-secondary'
+    environment:
+      - SERVICE=product-api
+      - SECONDARY=true
+      - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
+    networks:
+      consul:
+        ipv4_address: 10.5.1.7
+    depends_on:
+      - "product-db-secondary"
+      - "consul_secondary_server_0"
+      - "consul_secondary_server_1"
+      - "consul_secondary_server_2"
+      - "consul_server_0"
+      - "consul_server_1"
+      - "consul_server_2"
+    labels: 
+      type: client
+
+  product-db-secondary:
+    image: product-db
+    container_name: product-db-secondary
+    command: ["./bin/install.sh"]
+    volumes:
+      - "./consul_config/product_api_db_config_secondary.hcl:/config/product_api_db_config.hcl"
+      - "./client_config/svc_db_secondary.hcl:/tmp/svc_db.hcl"
+      - "./install.sh:/bin/install.sh"
+      - "./resolvers_config/product-db.hcl:/tmp/product-db.hcl"
+      - ./certificates/:/consul/config/certs/
+    environment:
+      - POSTGRES_DB=products
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - SERVICE=product-db
+      - SECONDARY=true
+      - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
+    depends_on:
+      - "consul_secondary_server_0"
+      - "consul_secondary_server_1"
+      - "consul_secondary_server_2"
+      - "consul_server_0"
+      - "consul_server_1"
+      - "consul_server_2"
+    networks:
+      consul:
+        ipv4_address: 10.5.1.8
+    labels: 
+      type: client
+
+  payments-secondary:
+    image: 'payments'
+    container_name: payments-secondary
+    command: ["./bin/install.sh"]
+    volumes:
+      - "./consul_config/payment_config_secondary.hcl:/config/payment_config.hcl"
+      - "./client_config/svc_payments_secondary.hcl:/tmp/svc_payments.hcl"
+      - "./resolvers_config/payments.hcl:/tmp/payments.hcl"
+      - ./certificates/:/consul/config/certs/
+      - "./install.sh:/bin/install.sh"
+    environment:
+      - SERVICE=payments
+      - SECONDARY=true
+      - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
+    depends_on:
+      - "consul_secondary_server_0"
+      - "consul_secondary_server_1"
+      - "consul_secondary_server_2"
+      - "consul_server_0"
+      - "consul_server_1"
+      - "consul_server_2"
+    networks:
+      consul:
+        ipv4_address: 10.5.1.9
     labels: 
       type: client
 
@@ -154,3 +400,6 @@ services:
 networks:
   consul:
     driver: bridge
+    ipam:
+      config:
+      - subnet: 10.5.0.0/16

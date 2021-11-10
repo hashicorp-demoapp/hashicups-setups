@@ -1,11 +1,12 @@
 service {
   name = "payments"
-  id = "payments"
+  id = "payments-secondary"
   port = 8080
  
   # Required in order to allow registration of a sidecar
   connect { 
-    sidecar_service {}
+    sidecar_service {
+    }
   }
 }
 
