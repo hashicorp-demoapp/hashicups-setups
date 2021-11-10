@@ -1,6 +1,9 @@
 ## Docker Compose Local Setup
 
-This Docker Compose solution deploys HashiCups with Consul. The Docker images utilized are not publicly available and must be created locally. 
+This Docker Compose solution deploys HashiCups with Consul. HashiCups is deployed redunantly with a secure Consul deployment. This includes mTLS, encrypted Gossip communciation, and the usage of ACLs.
+The Docker images utilized are not publicly available and must be created locally. 
+
+![overview of architecture](overview.png)
 
 To get started, please follow the steps below.
 
@@ -61,6 +64,7 @@ docker-compose up --no-recreate
 
 **TIP**: Use the command `docker logs [container_name]` to debug container start issues.
 
+## mTLS
 
 The Consul certificates were generated with the following commands:
 
