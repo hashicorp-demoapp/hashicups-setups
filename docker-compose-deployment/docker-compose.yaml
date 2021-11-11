@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   frontend:
-    image: 'hashicorpdemoapp/frontend:v0.0.3'
+    image: 'hashicorpdemoapp/frontend:latest'
     links:
       - 'public-api:public-api'
     volumes:
@@ -11,7 +11,7 @@ services:
     ports:
       - '80:80'
   public-api:
-    image: 'hashicorpdemoapp/public-api:v0.0.2'
+    image: 'hashicorpdemoapp/public-api:v0.0.5'
     environment:
       - PRODUCT_API_URI=http://product-api:9090
       - PAYMENT_API_URI=http://payments:8080
@@ -21,7 +21,7 @@ services:
     ports:
       - '8080:8080'
   product-api:
-    image: 'hashicorpdemoapp/product-api:v0.0.11'
+    image: 'hashicorpdemoapp/product-api:v0.0.17'
     volumes:
       - type: bind
         source: ./conf.json
@@ -31,7 +31,7 @@ services:
     ports:
       - '9090:9090'
   product-db:
-    image: 'hashicorpdemoapp/product-api-db:v0.0.11'
+    image: 'hashicorpdemoapp/product-api-db:v0.0.17'
     ports:
       - '5432:5432'
     environment:
@@ -39,4 +39,4 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=postgres
   payments:
-    image: 'hashicorpdemoapp/payments:v0.0.3'
+    image: 'hashicorpdemoapp/payments:latest'

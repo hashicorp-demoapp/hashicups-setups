@@ -1,10 +1,8 @@
 ---
-# Service to expose web frontend
-
 apiVersion: v1
 kind: Service
 metadata:
-  name: products-api-service
+  name: products-api
 spec:
   selector:
     app: products-api
@@ -13,18 +11,19 @@ spec:
       protocol: TCP
       port: 9090
       targetPort: 9090
-
 ---
-# Service account to allow pod access to Vault via K8s auth
-
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: products-api
 automountServiceAccountToken: true
-
 ---
-
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: products-api
+spec:
+  protocol: "http"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -33,14 +32,11 @@ metadata:
 data:
   config: |
     {
-      "db_connection": "host=postgres port=5432 user=postgres password=password dbname=products sslmode=disable",
+      "db_connection": "host=localhost port=5432 user=postgres password=password dbname=products sslmode=disable",
       "bind_address": ":9090",
       "metrics_address": ":9103"
     }
-
 ---
-# Web frontend
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -72,7 +68,8 @@ spec:
             path: conf.json
       containers:
         - name: products-api
-          image: product-api:local #localhost:5000/
+          image: hashicorpdemoapp/product-api:v0.0.17
+          imagePullPolicy: Always
           ports:
             - containerPort: 9090
             - containerPort: 9103
@@ -91,25 +88,3 @@ spec:
             - name: config
               mountPath: /config
               readOnly: true
-        - name: jaeger-agent
-          image: jaegertracing/jaeger-agent:latest
-          imagePullPolicy: IfNotPresent
-          ports:
-          - containerPort: 5775
-            name: zk-compact-trft
-            protocol: UDP
-          - containerPort: 5778
-            name: config-rest
-            protocol: TCP
-          - containerPort: 6831
-            name: jg-compact-trft
-            protocol: UDP
-          - containerPort: 6832
-            name: jg-binary-trft
-            protocol: UDP
-          - containerPort: 14271
-            name: admin-http
-            protocol: TCP
-          args:
-          - --reporter.grpc.host-port=dns:///jaeger-collector-headless.default:14250
-          - --reporter.type=grpc
