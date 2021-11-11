@@ -1,8 +1,7 @@
----
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-service
+  name: frontend
   labels:
     app: frontend
 spec:
@@ -12,8 +11,19 @@ spec:
       targetPort: 80
   selector:
     app: frontend
-
-
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: frontend
+automountServiceAccountToken: true
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: frontend
+spec:
+  protocol: "http"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -37,7 +47,7 @@ data:
         # Proxy pass the api location to save CORS
         # Use location exposed by Consul connect
         location /api {
-            proxy_pass http://127.0.0.1:8080;
+            proxy_pass http://localhost:8080;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection "Upgrade";
@@ -72,6 +82,7 @@ spec:
         consul.hashicorp.com/connect-inject: "true"
         consul.hashicorp.com/connect-service-upstreams: "public-api:8080"
     spec:
+      serviceAccountName: frontend
       volumes:
       - name: config
         configMap:
@@ -81,7 +92,8 @@ spec:
             path: default.conf
       containers:
         - name: frontend
-          image: hashicorpdemoapp/frontend:v0.0.3
+          image: hashicorpdemoapp/frontend:v0.0.5
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           volumeMounts:
