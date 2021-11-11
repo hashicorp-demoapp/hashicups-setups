@@ -9,7 +9,7 @@ To get started, please follow the steps below.
 
 ## Requirements
 
-- Docker
+- Docker v20.10.8+
 
 ## Create images
 
@@ -29,7 +29,12 @@ docker-compose up --detach
 
 **NOTE**: It takes approximately 10-15 seconds for all services to come up.
 
-Visit the Consul dashboard at http://localhost:8500 and ensure all services are up. 
+Visit the Consul dashboard at http://localhost:8500 and ensure all services are up.  
+To access the Consul UI use the following ACL token: 
+
+```
+20d16fb2-9bd6-d238-bfdc-1fab80177667
+```
 
 Next, go to http://localhost:80 to visit HashiCups.
 

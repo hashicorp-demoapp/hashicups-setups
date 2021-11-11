@@ -2,7 +2,7 @@
 
 # This is ensure sufficient time is provided for ACLs to replicate to the secondary Consul DC
 if [ $SECONDARY == true ]; then
-   sleep 8
+   sleep 10
 fi
 
 if [ $SERVICE != product-db ]; then
