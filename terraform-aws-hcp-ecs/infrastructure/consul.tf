@@ -40,7 +40,7 @@ locals {
 
 module "consul_acl_controller" {
   source  = "hashicorp/consul-ecs/aws//modules/acl-controller"
-  version = "0.2.0-beta2"
+  version = "0.2.0"
   log_configuration = {
     logDriver = "awslogs"
     options = {

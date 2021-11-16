@@ -125,8 +125,7 @@ Navigate to the `apps/` directory.
 cd apps
 ```
 
-In your CLI, run the script to get a new database username and password from Vault for the
-`product-api` to connect to the database.
+In your CLI, run the script to set the Consul address and token.
 
 ```shell
 source set.sh
@@ -144,6 +143,48 @@ Run Terraform.
 
 ```shell
 terraform apply
+```
+
+## Configure Vault's AWS IAM auth method
+
+We use Vault generate database credentials for the HashiCups PostgreSQL
+database.
+
+Navivate to this folder using your CLI.
+
+Navigate to the `vault/` directory.
+
+```shell
+cd vault
+```
+
+Customize your Terraform variables, such as the ECS cluster
+and products PostgreSQL database. You can retrieve these variables
+from the `terraform output` of the `infrastructure/` folder.
+
+```shell
+cp example.tfvars terraform.auto.tfvars
+```
+
+In your CLI, run the script to set the Vault address, token, and namespace.
+
+```shell
+source set.sh
+```
+
+Run Terraform.
+
+```shell
+terraform apply
+```
+
+## Access HashiCups
+
+Go to the `apps/` directory and output the ALB DNS name. You can use
+this to access the HashiCups application.
+
+```shell
+terraform output
 ```
 
 ## Clean-up

@@ -11,20 +11,11 @@ locals {
   product_api_port = 9090
 }
 
-resource "aws_secretsmanager_secret" "database" {
-  name                    = "${var.name}-products-database"
-  recovery_window_in_days = 0
-}
 
-resource "aws_secretsmanager_secret_version" "database" {
-  secret_id     = aws_secretsmanager_secret.database.id
-  secret_string = "host=${var.product_database_address} port=5432 user=${local.db_username} password=${local.db_password} dbname=products sslmode=disable"
-}
-
-resource "aws_iam_policy" "database" {
-  name        = "${var.name}-product-database"
+resource "aws_iam_policy" "vault" {
+  name        = "${var.name}-product-vault"
   path        = "/ecs/"
-  description = "${var.name}-product-database configuration for product-api"
+  description = "${var.name}-product-vault for AWS IAM Auth Method for Vault"
 
   policy = <<EOF
 {
@@ -33,10 +24,13 @@ resource "aws_iam_policy" "database" {
     {
       "Effect": "Allow",
       "Action": [
-        "secretsmanager:GetSecretValue"
+        "ec2:DescribeInstances",
+        "iam:GetInstanceProfile",
+        "iam:GetUser",
+        "iam:GetRole"
       ],
       "Resource": [
-        "${aws_secretsmanager_secret.database.arn}"
+        "*"
       ]
     }
   ]
@@ -59,44 +53,96 @@ resource "aws_ecs_service" "product_api" {
 }
 
 module "product_api" {
-  source                             = "hashicorp/consul-ecs/aws//modules/mesh-task"
-  version                            = "0.2.0-beta2"
-  requires_compatibilities           = ["EC2"]
-  family                             = local.product_api_name
-  port                               = local.product_api_port
-  log_configuration                  = local.product_log_config
-  additional_execution_role_policies = [aws_iam_policy.database.arn]
-  container_definitions = [{
-    name             = "product-api"
-    image            = "hashicorpdemoapp/product-api:v0.0.18"
-    essential        = true
-    logConfiguration = local.product_log_config
-    environment = [
-      {
-        name  = "NAME"
-        value = local.product_api_name
-      },
-      {
-        name  = "BIND_ADDRESS",
-        value = ":${local.product_api_port}"
+  source                        = "hashicorp/consul-ecs/aws//modules/mesh-task"
+  version                       = "0.2.0"
+  requires_compatibilities      = ["EC2"]
+  family                        = local.product_api_name
+  port                          = local.product_api_port
+  log_configuration             = local.product_log_config
+  additional_task_role_policies = [aws_iam_policy.vault.arn]
+  volumes = [
+    {
+      name = "config",
+      dockerVolumeConfiguration = {
+        scope         = "shared"
+        autoprovision = true
+        driver        = "local"
       }
-    ]
-    secrets = [{
-      name      = "DB_CONNECTION"
-      valueFrom = aws_secretsmanager_secret.database.arn
-    }]
-    portMappings = [
-      {
-        containerPort = local.product_api_port
-        hostPort      = local.product_api_port
-        protocol      = "tcp"
-      }
-    ]
-    cpu         = 0
-    mountPoints = []
-    volumesFrom = []
+    }
+  ]
+  container_definitions = [
+    {
+      name             = "vault"
+      image            = "joatmon08/vault-agent-ecs:1.8.5"
+      essential        = false
+      logConfiguration = local.product_log_config
+      environment = [
+        {
+          name  = "VAULT_ADDR"
+          value = var.hcp_vault_private_endpoint
+        },
+        {
+          name  = "VAULT_NAMESPACE"
+          value = var.hcp_vault_namespace
+        },
+        {
+          name  = "AWS_IAM_ROLE"
+          value = var.name
+        },
+        {
+          name = "CONFIG_FILE_TEMPLATE"
+          value = base64encode(templatefile("templates/conf.json", {
+            vault_database_creds_path = var.product_database_credentials_path,
+            database_address          = var.product_database_address,
+            products_api_port         = local.product_api_port
+          }))
+        },
+        {
+          name  = "CONFIG_FILE_NAME"
+          value = "conf.json"
+        }
+      ]
+      cpu = 0
+      mountPoints = [{
+        sourceVolume  = "config"
+        containerPath = "/config"
+      }]
+      volumesFrom = []
+    },
+    {
+      name             = "product-api"
+      image            = "hashicorpdemoapp/product-api:v0.0.19"
+      essential        = true
+      logConfiguration = local.product_log_config
+      dependsOn = [{
+        containerName = "vault"
+        condition     = "SUCCESS"
+      }]
+      environment = [
+        {
+          name  = "NAME"
+          value = local.product_api_name
+        },
+        {
+          name  = "CONFIG_FILE",
+          value = "/config/conf.json"
+        }
+      ]
+      portMappings = [
+        {
+          containerPort = local.product_api_port
+          hostPort      = local.product_api_port
+          protocol      = "tcp"
+        }
+      ]
+      cpu = 0
+      mountPoints = [{
+        sourceVolume  = "config"
+        containerPath = "/config"
+      }]
+      volumesFrom = []
   }]
-  retry_join                     = var.consul_attributes.consul_retry_join
+  retry_join                     = [var.consul_attributes.consul_retry_join]
   tls                            = true
   consul_server_ca_cert_arn      = var.consul_attributes.consul_server_ca_cert_arn
   gossip_key_secret_arn          = var.consul_attributes.gossip_key_secret_arn

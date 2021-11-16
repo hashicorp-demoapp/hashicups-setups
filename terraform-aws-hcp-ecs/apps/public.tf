@@ -27,7 +27,7 @@ resource "aws_ecs_service" "public_api" {
 
 module "public_api" {
   source                   = "hashicorp/consul-ecs/aws//modules/mesh-task"
-  version                  = "0.2.0-beta2"
+  version                  = "0.2.0"
   requires_compatibilities = ["FARGATE"]
   family                   = local.public_api_name
   port                     = local.public_api_port
@@ -64,7 +64,7 @@ module "public_api" {
       local_bind_port  = local.product_api_port
     }
   ]
-  retry_join                     = var.consul_attributes.consul_retry_join
+  retry_join                     = [var.consul_attributes.consul_retry_join]
   tls                            = true
   consul_server_ca_cert_arn      = var.consul_attributes.consul_server_ca_cert_arn
   gossip_key_secret_arn          = var.consul_attributes.gossip_key_secret_arn

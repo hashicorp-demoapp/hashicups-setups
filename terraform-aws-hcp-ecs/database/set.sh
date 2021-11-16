@@ -1,5 +1,7 @@
 #!/bin/bash
 
+curl https://raw.githubusercontent.com/hashicorp-demoapp/product-api-go/v0.0.19/database/products.sql --output products.sql
+
 export BOUNDARY_ADDR=$(cd ../infrastructure && terraform output -raw boundary_endpoint)
 
 mkdir -p secrets/

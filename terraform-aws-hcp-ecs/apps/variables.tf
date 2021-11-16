@@ -28,6 +28,11 @@ variable "product_database_address" {
   description = "Address of products PostgreSQL database"
 }
 
+variable "product_database_credentials_path" {
+  type        = string
+  description = "Vault credentials path for products PostgreSQL database"
+}
+
 variable "consul_attributes" {
   type        = map(string)
   description = "Attributes for ECS to connect to HCP Consul"
@@ -56,8 +61,13 @@ variable "default_tags" {
   }
 }
 
-locals {
-  database_credentials = jsondecode(file("secrets/product.json"))
-  db_username          = local.database_credentials.data.username
-  db_password          = local.database_credentials.data.password
+variable "hcp_vault_private_endpoint" {
+  type        = string
+  description = "Private endpoint of HCP Vault"
+  sensitive   = true
+}
+
+variable "hcp_vault_namespace" {
+  type        = string
+  description = "Namespace of HCP Vault"
 }

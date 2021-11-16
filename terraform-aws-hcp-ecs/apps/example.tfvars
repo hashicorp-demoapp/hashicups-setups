@@ -6,7 +6,8 @@ ecs_security_group = ""
 
 allow_cidr_blocks = ["0.0.0.0/0"]
 
-product_database_address = ""
+product_database_address          = ""
+product_database_credentials_path = ""
 
 consul_attributes = {
   "acl_secret_name_prefix"         = ""

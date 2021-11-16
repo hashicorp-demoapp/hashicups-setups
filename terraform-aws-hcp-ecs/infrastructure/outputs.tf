@@ -68,6 +68,12 @@ output "hcp_consul_root_token" {
   sensitive   = true
 }
 
+output "hcp_vault_private_endpoint" {
+  value       = hcp_vault_cluster.vault.vault_private_endpoint_url
+  description = "Private endpoint of HCP Vault"
+  sensitive   = true
+}
+
 output "hcp_vault_public_endpoint" {
   value       = hcp_vault_cluster.vault.vault_public_endpoint_url
   description = "Public endpoint of HCP Vault"
