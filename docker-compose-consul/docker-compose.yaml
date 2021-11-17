@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   consul_server_0:
-    image: consul:1.10.3
+    image: consul:1.10.4
     container_name: consul_server_0
     command: ["consul", "agent", "-config-dir=/config"]
     volumes:
@@ -18,7 +18,7 @@ services:
       type: server
 
   consul_server_1:
-    image: consul:1.10.3
+    image: consul:1.10.4
     container_name: consul_server_1
     command: ["consul", "agent", "-config-dir=/config"]
     volumes:
@@ -32,7 +32,7 @@ services:
 
 
   consul_server_2:
-    image: consul:1.10.3
+    image: consul:1.10.4
     container_name: consul_server_2
     command: ["consul", "agent", "-config-dir=/config"]
     volumes:
@@ -204,7 +204,7 @@ services:
       type: client
 
   consul_secondary_server_0:
-    image: consul:1.10.3
+    image: consul:1.10.4
     container_name: consul_secondary_server_0
     command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
     volumes:
@@ -217,7 +217,7 @@ services:
       type: server
 
   consul_secondary_server_1:
-    image: consul:1.10.3
+    image: consul:1.10.4
     container_name: consul_secondary_server_1
     command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
     volumes:
@@ -230,7 +230,7 @@ services:
       type: server
 
   consul_secondary_server_2:
-    image: consul:1.10.3
+    image: consul:1.10.4
     container_name: consul_secondary_server_2
     command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
     volumes:

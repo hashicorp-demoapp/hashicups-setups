@@ -92,7 +92,7 @@ spec:
             path: default.conf
       containers:
         - name: frontend
-          image: hashicorpdemoapp/frontend:v0.0.5
+          image: hashicorpdemoapp/frontend:v0.0.7
           imagePullPolicy: Always
           ports:
             - containerPort: 80
