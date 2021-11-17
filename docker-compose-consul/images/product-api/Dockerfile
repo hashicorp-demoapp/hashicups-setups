@@ -1,10 +1,10 @@
-FROM hashicorpdemoapp/product-api:v0.0.17 as base
+FROM hashicorpdemoapp/product-api:v0.0.19 as base
 
 FROM ubuntu:20.04
 
 
 ENV ENVOY_VERSION=1.18.3
-ENV CONSUL_VERSION=1.10.3
+ENV CONSUL_VERSION=1.10.4
 
 
 COPY --from=base /app/product-api /bin/product-api

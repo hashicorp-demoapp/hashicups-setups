@@ -3,7 +3,7 @@ FROM hashicorpdemoapp/payments:latest as base
 FROM ubuntu:20.04
 
 ENV ENVOY_VERSION=1.18.3
-ENV CONSUL_VERSION=1.10.3
+ENV CONSUL_VERSION=1.10.4
 
 
 COPY --from=base spring-boot-payments-0.0.12.jar /bin/spring-boot-payments-0.0.12.jar

@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   frontend:
-    image: 'hashicorpdemoapp/frontend:latest'
+    image: 'hashicorpdemoapp/frontend:v0.0.7'
     links:
       - 'public-api:public-api'
     volumes:
@@ -21,7 +21,7 @@ services:
     ports:
       - '8080:8080'
   product-api:
-    image: 'hashicorpdemoapp/product-api:v0.0.17'
+    image: 'hashicorpdemoapp/product-api:v0.0.19'
     volumes:
       - type: bind
         source: ./conf.json
@@ -31,7 +31,7 @@ services:
     ports:
       - '9090:9090'
   product-db:
-    image: 'hashicorpdemoapp/product-api-db:v0.0.17'
+    image: 'hashicorpdemoapp/product-api-db:v0.0.19'
     ports:
       - '5432:5432'
     environment:
