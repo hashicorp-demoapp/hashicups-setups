@@ -59,7 +59,7 @@ services:
       - "./consul_config/frontend_config.hcl:/config/frontend_config.hcl"
       - "./client_config/svc_frontend.hcl:/tmp/svc_frontend.hcl"
       - "./resolvers_config/frontend.hcl:/tmp/frontend.hcl"
-      - ./certificates/consul-agent-ca.pem:/consul/config/certs/consul-agent-ca.pem
+      - ./certificates/:/consul/config/certs/
     ports:
       - '80:80'
     environment:
@@ -88,10 +88,11 @@ services:
     volumes:
       - "./consul_config/public_api_config.hcl:/config/public_api_config.hcl"
       - "./client_config/svc_public_api.hcl:/config/svc_public_api.hcl"
-      - "./consul_config/default-intentions.hcl:/tmp/default-intentions.hcl"
+      - "./intentions/default-intentions.hcl:/tmp/default-intentions.hcl"
       - "./install.sh:/bin/install.sh"
       - "./resolvers_config/public-api.hcl:/tmp/public-api.hcl"
-      - ./certificates/consul-agent-ca.pem:/consul/config/certs/consul-agent-ca.pem
+      - ./certificates/:/consul/config/certs/
+      - ./intentions/public-api.hcl:/tmp/intention.hcl
     environment:
       - SERVICE=public-api
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
@@ -123,7 +124,8 @@ services:
       - "./client_config/svc_product_api.hcl:/config/svc_product_api.hcl"
       - "./resolvers_config/product-api.hcl:/tmp/product-api.hcl"
       - "./install.sh:/bin/install.sh"
-      - ./certificates/consul-agent-ca.pem:/consul/config/certs/consul-agent-ca.pem
+      - ./certificates/:/consul/config/certs/
+      - ./intentions/product-api.hcl:/tmp/intention.hcl
     links:
       - 'product-db:product-db'
     ports:
@@ -155,7 +157,8 @@ services:
       - "/var/lib/postgresql/data"
       - "./install.sh:/docker-entrypoint-initdb.d/install.sh"
       - "./resolvers_config/product-db.hcl:/tmp/product-db.hcl"
-      - "./certificates/consul-agent-ca.pem:/consul/config/certs/consul-agent-ca.pem"
+      - ./certificates/:/consul/config/certs/
+      - ./intentions/product-db.hcl:/tmp/intention.hcl
     environment:
       - POSTGRES_DB=products
       - POSTGRES_PASSWORD=password
@@ -183,7 +186,8 @@ services:
       - "./client_config/svc_payments.hcl:/tmp/svc_payments.hcl"
       - "./resolvers_config/payments.hcl:/tmp/payments.hcl"
       - "./install.sh:/bin/install.sh"
-      - ./certificates/consul-agent-ca.pem:/consul/config/certs/consul-agent-ca.pem
+      - "./certificates/:/consul/config/certs/"
+      - "./intentions/payments.hcl:/tmp/intention.hcl"
     environment:
       - SERVICE=payments
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
@@ -279,10 +283,11 @@ services:
     volumes:
       - "./consul_config/public_api_config_secondary.hcl:/config/public_api_config.hcl"
       - "./client_config/svc_public_api_secondary.hcl:/config/svc_public_api.hcl"
-      - "./consul_config/default-intentions.hcl:/tmp/default-intentions.hcl"
+      - "./intentions/default-intentions.hcl:/tmp/default-intentions.hcl"
       - "./install.sh:/bin/install.sh"
       - "./resolvers_config/public-api.hcl:/tmp/public-api.hcl"
       - ./certificates/:/consul/config/certs/
+      - ./intentions/public-api.hcl:/tmp/intention.hcl
     environment:
       - SERVICE=public-api
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
@@ -316,6 +321,7 @@ services:
       - "./resolvers_config/product-api.hcl:/tmp/product-api.hcl"
       - "./install.sh:/bin/install.sh"
       - ./certificates/:/consul/config/certs/
+      - ./intentions/product-api.hcl:/tmp/intention.hcl
     links:
       - 'product-db-secondary:product-db-secondary'
     environment:
@@ -347,6 +353,7 @@ services:
       - "./install.sh:/bin/install.sh"
       - "./resolvers_config/product-db.hcl:/tmp/product-db.hcl"
       - ./certificates/:/consul/config/certs/
+      - ./intentions/product-db.hcl:/tmp/intention.hcl  
     environment:
       - POSTGRES_DB=products
       - POSTGRES_PASSWORD=password
@@ -378,6 +385,7 @@ services:
       - "./resolvers_config/payments.hcl:/tmp/payments.hcl"
       - ./certificates/:/consul/config/certs/
       - "./install.sh:/bin/install.sh"
+      - ./intentions/payments.hcl:/tmp/intention.hcl
     environment:
       - SERVICE=payments
       - SECONDARY=true
