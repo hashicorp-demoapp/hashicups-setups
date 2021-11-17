@@ -3,6 +3,6 @@ Name = "*"
 Sources = [
   {
     Name = "*"
-    Action = "allow"
+    Action = "deny"
   }
 ]
