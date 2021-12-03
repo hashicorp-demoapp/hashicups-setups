@@ -16,6 +16,7 @@ services:
         ipv4_address: 10.5.0.2
     labels: 
       type: server
+      location: primary
 
   consul_server_1:
     image: consul:1.10.3
@@ -29,6 +30,7 @@ services:
         ipv4_address: 10.5.0.3
     labels: 
       type: server
+      location: primary
 
 
   consul_server_2:
@@ -43,6 +45,7 @@ services:
         ipv4_address: 10.5.0.4
     labels: 
       type: server
+      location: primary
 
 
   frontend:
@@ -75,7 +78,9 @@ services:
       consul:
         ipv4_address: 10.5.0.5
     labels: 
-      type: client
+      type: "client"
+      application: "frontend"
+      location: primary
 
 
   public-api:
@@ -110,7 +115,9 @@ services:
       consul:
         ipv4_address: 10.5.0.6
     labels: 
-      type: client
+      type: "client"
+      application: "backend"
+      location: primary
 
   product-api:
     image: 'product-api'
@@ -144,7 +151,9 @@ services:
       - "consul_server_1"
       - "consul_server_2"
     labels: 
-      type: client
+      type: "client"
+      application: "backend"
+      location: primary
 
   product-db:
     image: product-db
@@ -175,7 +184,9 @@ services:
       consul:
         ipv4_address: 10.5.0.8
     labels: 
-      type: client 
+      type: "client"
+      application: "backend"
+      location: primary
 
   payments:
     image: 'payments'
@@ -201,7 +212,9 @@ services:
       consul:
         ipv4_address: 10.5.0.9
     labels: 
-      type: client
+      type: "client"
+      application: "backend"
+      location: primary
 
   consul_secondary_server_0:
     image: consul:1.10.3
@@ -215,6 +228,7 @@ services:
         ipv4_address: 10.5.1.2
     labels: 
       type: server
+      location: secondary
 
   consul_secondary_server_1:
     image: consul:1.10.3
@@ -228,6 +242,7 @@ services:
         ipv4_address: 10.5.1.3
     labels: 
       type: server
+      location: secondary
 
   consul_secondary_server_2:
     image: consul:1.10.3
@@ -241,6 +256,7 @@ services:
         ipv4_address: 10.5.1.4
     labels: 
       type: server
+      location: secondary
 
   frontend-secondary:
     image: 'frontend'
@@ -274,7 +290,9 @@ services:
       consul:
         ipv4_address: 10.5.1.5
     labels: 
-      type: client
+      type: "client"
+      application: "frontend"
+      location: secondary
 
   public-api-secondary:
     image: 'public-api'
@@ -306,7 +324,9 @@ services:
       consul:
         ipv4_address: 10.5.1.6
     labels: 
-      type: client
+      type: "client"
+      application: "backend"
+      location: secondary
 
   product-api-secondary:
     image: 'product-api'
@@ -341,7 +361,9 @@ services:
       - "consul_server_1"
       - "consul_server_2"
     labels: 
-      type: client
+      type: "client"
+      application: "backend"
+      location: secondary
 
   product-db-secondary:
     image: product-db
@@ -373,7 +395,9 @@ services:
       consul:
         ipv4_address: 10.5.1.8
     labels: 
-      type: client
+      type: "client"
+      application: "backend"
+      location: secondary
 
   payments-secondary:
     image: 'payments'
@@ -401,9 +425,10 @@ services:
     networks:
       consul:
         ipv4_address: 10.5.1.9
-    labels: 
-      type: client
-
+    labels:
+      type: "client"
+      application: "backend"
+      location: secondary
 
 networks:
   consul:
@@ -411,3 +436,4 @@ networks:
     ipam:
       config:
       - subnet: 10.5.0.0/16
+
