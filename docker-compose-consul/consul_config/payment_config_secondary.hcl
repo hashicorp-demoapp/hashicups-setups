@@ -26,14 +26,14 @@ ca_file = "consul/config/certs/consul-agent-ca.pem"
 cert_file = "consul/config/certs/dc2-client-consul-0.pem"
 key_file  = "consul/config/certs/dc2-client-consul-0-key.pem"
 
-acl = {
+acl {
   enabled = true
   default_policy = "deny"
   enable_token_persistence = true
   enable_token_replication = true
   down_policy = "extend-cache"
 
-  tokens = {
+  tokens {
     default = "20d16fb2-9bd6-d238-bfdc-1fab80177667"
   }
 }

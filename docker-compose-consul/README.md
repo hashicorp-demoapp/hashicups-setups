@@ -83,3 +83,8 @@ consul tls cert create -server -dc dc2 -additional-dnsname="*.dc1.consul" -addit
 consul tls cert create -server -dc dc2 -additional-dnsname="*.dc1.consul" -additional-dnsname="consul_secondary_server_1"
 
 ```
+
+## Resolvers
+
+The resolver for the public-api has been commented out in the `docker-compse.yml` file and in the `install.sh` file.
+The reasoning behind the ommission is to help the practitioner learn by themseves creating the configuration resolver entry.

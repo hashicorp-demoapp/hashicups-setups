@@ -48,15 +48,16 @@ if [ $SERVICE == public-api ]; then
  echo "Starting the Public-API application..."
    nohup /bin/public-api > /api.out 2>&1 &
    sleep 3
-
+  ## The configuration resolver command is commented out for the Chaos engineering lab.
+  ## Uncomment if not using the chaos engineering lab.
    if [ consul services register /config/svc_public_api.hcl ]; then
       consul config write /tmp/default-intentions.hcl
          if [ $SECONDARY == false ]; then 
-            consul config write /tmp/public-api.hcl
+            # consul config write /tmp/public-api.hcl
             consul config write /tmp/intention.hcl
             nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1
          else
-            consul config write /tmp/public-api.hcl
+            # consul config write /tmp/public-api.hcl
             consul config write /tmp/intention.hcl
             nohup consul connect envoy -sidecar-for ${SERVICE}-secondary > /tmp/proxy.log 2>&1
          fi
@@ -65,7 +66,7 @@ if [ $SERVICE == public-api ]; then
       consul services register /config/svc_public_api.hcl
       consul config write /tmp/default-intentions.hcl
       consul config write /tmp/intention.hcl
-      consul config write /tmp/public-api.hcl
+      # consul config write /tmp/public-api.hcl
       if [ $SECONDARY == false ]; then 
          nohup consul connect envoy -sidecar-for $SERVICE > /tmp/proxy.log 2>&1
       else

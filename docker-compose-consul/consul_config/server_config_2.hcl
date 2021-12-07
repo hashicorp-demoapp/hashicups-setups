@@ -54,14 +54,14 @@ performance {
   raft_multiplier = 2
 }
 
-acl = {
+acl {
   enabled = true
   default_policy = "deny"
   enable_token_persistence = true
   enable_token_replication = true
   down_policy = "extend-cache"
 
-  tokens = {
+  tokens {
     master = "20d16fb2-9bd6-d238-bfdc-1fab80177667"
   }
 }
