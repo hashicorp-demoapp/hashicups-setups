@@ -95,7 +95,8 @@ services:
       - "./client_config/svc_public_api.hcl:/config/svc_public_api.hcl"
       - "./intentions/default-intentions.hcl:/tmp/default-intentions.hcl"
       - "./install.sh:/bin/install.sh"
-      - "./resolvers_config/public-api.hcl:/tmp/public-api.hcl"
+      ## Commented out for Chaos Engineering lab
+      # - "./resolvers_config/public-api.hcl:/tmp/public-api.hcl"
       - ./certificates/:/consul/config/certs/
       - ./intentions/public-api.hcl:/tmp/intention.hcl
     environment:
@@ -303,7 +304,8 @@ services:
       - "./client_config/svc_public_api_secondary.hcl:/config/svc_public_api.hcl"
       - "./intentions/default-intentions.hcl:/tmp/default-intentions.hcl"
       - "./install.sh:/bin/install.sh"
-      - "./resolvers_config/public-api.hcl:/tmp/public-api.hcl"
+      ## Commented out due to Chaos Engineering lab
+      # - "./resolvers_config/public-api.hcl:/tmp/public-api.hcl"
       - ./certificates/:/consul/config/certs/
       - ./intentions/public-api.hcl:/tmp/intention.hcl
     environment:
