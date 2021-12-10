@@ -63,6 +63,7 @@ services:
       - "./client_config/svc_frontend.hcl:/tmp/svc_frontend.hcl"
       - "./resolvers_config/frontend.hcl:/tmp/frontend.hcl"
       - ./certificates/:/consul/config/certs/
+      - ./chaos.sh:/tmp/chaos.sh
     ports:
       - '80:80'
     environment:
@@ -272,8 +273,9 @@ services:
       - "./client_config/svc_frontend_secondary.hcl:/tmp/svc_frontend_secondary.hcl"
       - "./resolvers_config/frontend.hcl:/tmp/frontend.hcl"
       - ./certificates/:/consul/config/certs/
+      - ./chaos.sh:/tmp/chaos.sh
     ports:
-      - '3000:80'
+      - '3030:80'
     environment:
       - SERVICE=frontend
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
