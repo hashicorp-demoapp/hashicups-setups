@@ -9,12 +9,12 @@ curl 'http://localhost:8080/api' \
       -H 'Connection: keep-alive' \
       -H 'DNT: 1' \
       -H 'Origin: http://localhost:8080' \
-      --data-binary '{"query":"mutation{ pay(details:{ name: \"nic\", type: \"mastercard\", number: \"1234123-0123123\", expiry:\"10/02\",    cv2: 1231, amount: 12.23 }){id, card_plaintext, card_ciphe$
+      --data-binary '{"query":"mutation{ pay(details:{ name: \"nic\", type: \"mastercard\", number: \"1234123-0123123\", expiry:\"10/02\",    cv2: 1231, amount: 12.23 }){id, card_plaintext, card_ciphe$'
 
- echo " "
  if [ $? != 0 ]; then
         echo "ERROR: Failed connecting to the API"
  fi
+ echo " "
 }
 
 
@@ -25,7 +25,7 @@ query
 
 COUNTER=$[$COUNTER + 1]
 echo "Interation: $COUNTER"
-echo '####################################'
+echo "####################################"
 sleep 1
 
 done
