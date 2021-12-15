@@ -14,7 +14,7 @@ fi
 
 if [ $SERVICE == payments ]; then
  echo "Starting the payment application..."
-  java -jar /bin/spring-boot-payments-0.0.12.jar > /spring_boot.out 2>&1 &
+  java -jar /bin/spring-boot-payments.jar > /spring_boot.out 2>&1 &
   sleep 3
   echo "Registering the service..."
   if [ consul services register /tmp/svc_payments.hcl ]; then
