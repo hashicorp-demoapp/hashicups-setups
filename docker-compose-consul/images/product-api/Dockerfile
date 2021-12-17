@@ -4,7 +4,7 @@ FROM ubuntu:20.04
 
 
 ENV ENVOY_VERSION=1.18.3
-ENV CONSUL_VERSION=1.10.4
+ENV CONSUL_VERSION=1.11.1
 
 
 COPY --from=base /app/product-api /bin/product-api

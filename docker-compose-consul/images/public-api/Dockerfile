@@ -3,7 +3,7 @@ FROM hashicorpdemoapp/public-api:v0.0.5 as base
 FROM ubuntu:20.04
 
 ENV ENVOY_VERSION=1.18.3
-ENV CONSUL_VERSION=1.10.4
+ENV CONSUL_VERSION=1.11.1
 
 
 COPY --from=base app/public-api /bin/public-api

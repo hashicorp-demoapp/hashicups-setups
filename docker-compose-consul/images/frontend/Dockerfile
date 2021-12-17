@@ -3,7 +3,7 @@ FROM hashicorpdemoapp/frontend:v0.0.7 as base
 FROM nginx:1.21.1
 
 ENV ENVOY_VERSION=1.18.3
-ENV CONSUL_VERSION=1.10.4
+ENV CONSUL_VERSION=1.11.1
 
 COPY --from=base /usr/share/nginx/html /usr/share/nginx/html
 
