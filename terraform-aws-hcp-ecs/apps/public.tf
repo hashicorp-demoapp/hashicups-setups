@@ -34,7 +34,7 @@ module "public_api" {
   log_configuration        = local.public_log_config
   container_definitions = [{
     name             = "public-api"
-    image            = "hashicorpdemoapp/public-api:v0.0.5"
+    image            = "hashicorpdemoapp/public-api:v0.0.6"
     essential        = true
     logConfiguration = local.public_log_config
     environment = [{

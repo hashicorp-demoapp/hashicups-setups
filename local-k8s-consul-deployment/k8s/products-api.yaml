@@ -60,15 +60,15 @@ spec:
     spec:
       serviceAccountName: products-api
       volumes:
-      - name: config
-        configMap:
-          name: db-configmap
-          items:
-          - key: config
-            path: conf.json
+        - name: config
+          configMap:
+            name: db-configmap
+            items:
+              - key: config
+                path: conf.json
       containers:
         - name: products-api
-          image: hashicorpdemoapp/product-api:v0.0.19
+          image: hashicorpdemoapp/product-api:v0.0.20
           imagePullPolicy: Always
           ports:
             - containerPort: 9090
