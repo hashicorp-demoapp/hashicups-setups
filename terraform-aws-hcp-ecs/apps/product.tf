@@ -111,7 +111,7 @@ module "product_api" {
     },
     {
       name             = "product-api"
-      image            = "hashicorpdemoapp/product-api:v0.0.19"
+      image            = "hashicorpdemoapp/product-api:v0.0.20"
       essential        = true
       logConfiguration = local.product_log_config
       dependsOn = [{
