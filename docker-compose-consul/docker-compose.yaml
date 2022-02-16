@@ -3,10 +3,10 @@ services:
   consul_server_0:
     image: consul:1.11.1
     container_name: consul_server_0
-    command: ["consul", "agent", "-config-dir=/config"]
+    command: [ "consul", "agent", "-config-dir=/config" ]
     volumes:
-    - "./consul_config/server_config_0.hcl:/config/config.hcl"
-    - ./certificates/:/consul/config/certs/
+      - "./consul_config/server_config_0.hcl:/config/config.hcl"
+      - ./certificates/:/consul/config/certs/
     ports:
       - "8500:8500"
       - "8600:8600/tcp"
@@ -14,62 +14,58 @@ services:
     networks:
       consul:
         ipv4_address: 10.5.0.2
-    labels: 
+    labels:
       type: server
       location: primary
 
   consul_server_1:
     image: consul:1.11.1
     container_name: consul_server_1
-    command: ["consul", "agent", "-config-dir=/config"]
+    command: [ "consul", "agent", "-config-dir=/config" ]
     volumes:
-    - "./consul_config/server_config_1.hcl:/config/config.hcl"
-    - ./certificates/:/consul/config/certs/
+      - "./consul_config/server_config_1.hcl:/config/config.hcl"
+      - ./certificates/:/consul/config/certs/
     networks:
       consul:
         ipv4_address: 10.5.0.3
-    labels: 
+    labels:
       type: server
       location: primary
-
 
   consul_server_2:
     image: consul:1.11.1
     container_name: consul_server_2
-    command: ["consul", "agent", "-config-dir=/config"]
+    command: [ "consul", "agent", "-config-dir=/config" ]
     volumes:
-    - "./consul_config/server_config_2.hcl:/config/config.hcl"
-    - ./certificates/:/consul/config/certs/
+      - "./consul_config/server_config_2.hcl:/config/config.hcl"
+      - ./certificates/:/consul/config/certs/
     networks:
       consul:
         ipv4_address: 10.5.0.4
-    labels: 
+    labels:
       type: server
       location: primary
-
 
   frontend:
     image: 'frontend'
     container_name: 'frontend'
-    command: ["./bin/install.sh"]
+    command: [ "./bin/install.sh" ]
     links:
       - 'public-api:public-api'
     volumes:
-      - type: bind
-        source: ./nginx.conf
-        target: /etc/nginx/conf.d/default.conf
-      - "./install.sh:/bin/install.sh" 
+      - "./install.sh:/bin/install.sh"
       - "./consul_config/frontend_config.hcl:/config/frontend_config.hcl"
       - "./client_config/svc_frontend.hcl:/tmp/svc_frontend.hcl"
       - "./resolvers_config/frontend.hcl:/tmp/frontend.hcl"
       - ./certificates/:/consul/config/certs/
       - ./chaos.sh:/tmp/chaos.sh
     ports:
-      - '80:80'
+      - '80:3000'
     environment:
+      - NEXT_PUBLIC_PUBLIC_API_URL=http://public-api:8080
       - SERVICE=frontend
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
-      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667 
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
       - SECONDARY=false
     depends_on:
       - "consul_server_0"
@@ -78,11 +74,10 @@ services:
     networks:
       consul:
         ipv4_address: 10.5.0.5
-    labels: 
+    labels:
       type: "client"
       application: "frontend"
       location: primary
-
 
   public-api:
     image: 'public-api'
@@ -90,7 +85,7 @@ services:
     links:
       - 'product-api:product-api'
       - 'payments:payments'
-    command: ["./bin/install.sh"]
+    command: [ "./bin/install.sh" ]
     volumes:
       - "./consul_config/public_api_config.hcl:/config/public_api_config.hcl"
       - "./client_config/svc_public_api.hcl:/config/svc_public_api.hcl"
@@ -103,7 +98,7 @@ services:
     environment:
       - SERVICE=public-api
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
-      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667 
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
       - PRODUCT_API_URI=http://localhost:9090
       - PAYMENT_API_URI=http://localhost:1800
       - SECONDARY=false
@@ -116,7 +111,7 @@ services:
     networks:
       consul:
         ipv4_address: 10.5.0.6
-    labels: 
+    labels:
       type: "client"
       application: "backend"
       location: primary
@@ -124,7 +119,7 @@ services:
   product-api:
     image: 'product-api'
     container_name: product-api
-    command: ["./bin/install.sh"]
+    command: [ "./bin/install.sh" ]
     volumes:
       - type: bind
         source: ./conf.json
@@ -143,7 +138,7 @@ services:
       - SERVICE=product-api
       - SECONDARY=false
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
-      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667 
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
     networks:
       consul:
         ipv4_address: 10.5.0.7
@@ -152,7 +147,7 @@ services:
       - "consul_server_0"
       - "consul_server_1"
       - "consul_server_2"
-    labels: 
+    labels:
       type: "client"
       application: "backend"
       location: primary
@@ -177,7 +172,7 @@ services:
       - SERVICE=product-db
       - SECONDARY=false
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
-      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667 
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
     depends_on:
       - "consul_server_0"
       - "consul_server_1"
@@ -185,7 +180,7 @@ services:
     networks:
       consul:
         ipv4_address: 10.5.0.8
-    labels: 
+    labels:
       type: "client"
       application: "backend"
       location: primary
@@ -193,7 +188,7 @@ services:
   payments:
     image: 'payments'
     container_name: payments
-    command: ["./bin/install.sh"]
+    command: [ "./bin/install.sh" ]
     volumes:
       - "./consul_config/payment_config.hcl:/config/payment_config.hcl"
       - "./client_config/svc_payments.hcl:/tmp/svc_payments.hcl"
@@ -204,7 +199,7 @@ services:
     environment:
       - SERVICE=payments
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
-      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667 
+      - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
       - SECONDARY=false
     depends_on:
       - "consul_server_0"
@@ -213,7 +208,7 @@ services:
     networks:
       consul:
         ipv4_address: 10.5.0.9
-    labels: 
+    labels:
       type: "client"
       application: "backend"
       location: primary
@@ -221,54 +216,69 @@ services:
   consul_secondary_server_0:
     image: consul:1.11.1
     container_name: consul_secondary_server_0
-    command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
+    command:
+      [
+        "consul",
+        "agent",
+        "-config-file=/config/config.hcl",
+        "-config-dir=/config"
+      ]
     volumes:
-    - "./consul_config/server_secondary_config_0.hcl:/config/config.hcl"
-    - ./certificates/:/consul/config/certs/
+      - "./consul_config/server_secondary_config_0.hcl:/config/config.hcl"
+      - ./certificates/:/consul/config/certs/
     networks:
       consul:
         ipv4_address: 10.5.1.2
-    labels: 
+    labels:
       type: server
       location: secondary
 
   consul_secondary_server_1:
     image: consul:1.11.1
     container_name: consul_secondary_server_1
-    command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
+    command:
+      [
+        "consul",
+        "agent",
+        "-config-file=/config/config.hcl",
+        "-config-dir=/config"
+      ]
     volumes:
-    - "./consul_config/server_secondary_config_1.hcl:/config/config.hcl"
-    - ./certificates/:/consul/config/certs/
+      - "./consul_config/server_secondary_config_1.hcl:/config/config.hcl"
+      - ./certificates/:/consul/config/certs/
     networks:
       consul:
         ipv4_address: 10.5.1.3
-    labels: 
+    labels:
       type: server
       location: secondary
 
   consul_secondary_server_2:
     image: consul:1.11.1
     container_name: consul_secondary_server_2
-    command: ["consul", "agent", "-config-file=/config/config.hcl", "-config-dir=/config"]
+    command:
+      [
+        "consul",
+        "agent",
+        "-config-file=/config/config.hcl",
+        "-config-dir=/config"
+      ]
     volumes:
-    - "./consul_config/server_secondary_config_2.hcl:/config/config.hcl"
-    - ./certificates/:/consul/config/certs/
+      - "./consul_config/server_secondary_config_2.hcl:/config/config.hcl"
+      - ./certificates/:/consul/config/certs/
     networks:
       consul:
         ipv4_address: 10.5.1.4
-    labels: 
+    labels:
       type: server
       location: secondary
 
   frontend-secondary:
     image: 'frontend'
     container_name: 'frontend-secondary'
-    command: ["./bin/install.sh"]
+    command: [ "./bin/install.sh" ]
     volumes:
-      - type: bind
-        source: ./nginx.conf
-        target: /etc/nginx/conf.d/default.conf
-      - "./install.sh:/bin/install.sh" 
+      - "./install.sh:/bin/install.sh"
       - "./consul_config/frontend_config_secondary.hcl:/config/frontend_config.hcl"
       - "./client_config/svc_frontend_secondary.hcl:/tmp/svc_frontend_secondary.hcl"
       - "./resolvers_config/frontend.hcl:/tmp/frontend.hcl"
@@ -277,6 +287,7 @@ services:
     ports:
       - '3030:80'
     environment:
+      - NEXT_PUBLIC_PUBLIC_API_URL=http://public-api:8080
       - SERVICE=frontend
       - CONSUL_HTTP_ADDR=http://127.0.0.1:8500
       - CONSUL_HTTP_TOKEN=20d16fb2-9bd6-d238-bfdc-1fab80177667
@@ -292,7 +303,7 @@ services:
     networks:
       consul:
         ipv4_address: 10.5.1.5
-    labels: 
+    labels:
       type: "client"
       application: "frontend"
       location: secondary
@@ -300,7 +311,7 @@ services:
   public-api-secondary:
     image: 'public-api'
     container_name: public-api-secondary
-    command: ["./bin/install.sh"]
+    command: [ "./bin/install.sh" ]
     volumes:
       - "./consul_config/public_api_config_secondary.hcl:/config/public_api_config.hcl"
       - "./client_config/svc_public_api_secondary.hcl:/config/svc_public_api.hcl"
@@ -327,7 +338,7 @@ services:
     networks:
       consul:
         ipv4_address: 10.5.1.6
-    labels: 
+    labels:
       type: "client"
       application: "backend"
       location: secondary
@@ -335,7 +346,7 @@ services:
   product-api-secondary:
     image: 'product-api'
     container_name: product-api-secondary
-    command: ["./bin/install.sh"]
+    command: [ "./bin/install.sh" ]
     volumes:
       - type: bind
         source: ./conf_secondary.json
@@ -364,7 +375,7 @@ services:
       - "consul_server_0"
       - "consul_server_1"
       - "consul_server_2"
-    labels: 
+    labels:
       type: "client"
       application: "backend"
       location: secondary
@@ -372,14 +383,14 @@ services:
   product-db-secondary:
     image: product-db
     container_name: product-db-secondary
-    command: ["./bin/install.sh"]
+    command: [ "./bin/install.sh" ]
     volumes:
       - "./consul_config/product_api_db_config_secondary.hcl:/config/product_api_db_config.hcl"
       - "./client_config/svc_db_secondary.hcl:/tmp/svc_db.hcl"
       - "./install.sh:/bin/install.sh"
       - "./resolvers_config/product-db.hcl:/tmp/product-db.hcl"
       - ./certificates/:/consul/config/certs/
-      - ./intentions/product-db.hcl:/tmp/intention.hcl  
+      - ./intentions/product-db.hcl:/tmp/intention.hcl
     environment:
       - POSTGRES_DB=products
       - POSTGRES_PASSWORD=password
@@ -398,7 +409,7 @@ services:
     networks:
       consul:
         ipv4_address: 10.5.1.8
-    labels: 
+    labels:
       type: "client"
       application: "backend"
       location: secondary
@@ -406,7 +417,7 @@ services:
   payments-secondary:
     image: 'payments'
     container_name: payments-secondary
-    command: ["./bin/install.sh"]
+    command: [ "./bin/install.sh" ]
     volumes:
       - "./consul_config/payment_config_secondary.hcl:/config/payment_config.hcl"
       - "./client_config/svc_payments_secondary.hcl:/tmp/svc_payments.hcl"
@@ -439,5 +450,4 @@ networks:
     driver: bridge
     ipam:
       config:
-      - subnet: 10.5.0.0/16
-
+        - subnet: 10.5.0.0/16
