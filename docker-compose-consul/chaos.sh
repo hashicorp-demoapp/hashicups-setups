@@ -11,7 +11,7 @@ RESULT=$(curl 'http://localhost:8080/api' \
       -H 'Origin: http://localhost:8080' \
       -w "%{http_code}" \
       --silent \
-      --data-binary '{"query":"mutation{ pay(details:{ name: \"nic\", type: \"mastercard\", number: \"1234123-0123123\", expiry:\"10/02\",    cv2: 1231, amount: 12.23 }){id, card_plaintext, card_ciphertext, message } }"}')
+      --data-binary '{"query":"mutation{ pay(details:{ name: \"karl\", type: \"mastercard\", number: \"1234123-0123123\", expiry:\"10/02\",    cv2: 1231, amount: 12.23 }){id, card_plaintext, card_ciphertext, message } }"}')
 echo $RESULT | jq -C .
 
 http_code=$(echo $RESULT | jq -C . | tail -1)

@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   consul_server_0:
-    image: consul:1.11.1
+    image: consul:1.11.3
     container_name: consul_server_0
     command: [ "consul", "agent", "-config-dir=/config" ]
     volumes:
@@ -19,7 +19,7 @@ services:
       location: primary
 
   consul_server_1:
-    image: consul:1.11.1
+    image: consul:1.11.3
     container_name: consul_server_1
     command: [ "consul", "agent", "-config-dir=/config" ]
     volumes:
@@ -33,7 +33,7 @@ services:
       location: primary
 
   consul_server_2:
-    image: consul:1.11.1
+    image: consul:1.11.3
     container_name: consul_server_2
     command: [ "consul", "agent", "-config-dir=/config" ]
     volumes:
@@ -49,7 +49,7 @@ services:
   frontend:
     image: 'frontend'
     container_name: 'frontend'
-    command: [ "./bin/install.sh" ]
+    command: [ "/bin/install.sh" ]
     links:
       - 'public-api:public-api'
     volumes:
@@ -214,7 +214,7 @@ services:
       location: primary
 
   consul_secondary_server_0:
-    image: consul:1.11.1
+    image: consul:1.11.3
     container_name: consul_secondary_server_0
     command:
       [
@@ -234,7 +234,7 @@ services:
       location: secondary
 
   consul_secondary_server_1:
-    image: consul:1.11.1
+    image: consul:1.11.3
     container_name: consul_secondary_server_1
     command:
       [
@@ -254,7 +254,7 @@ services:
       location: secondary
 
   consul_secondary_server_2:
-    image: consul:1.11.1
+    image: consul:1.11.3
     container_name: consul_secondary_server_2
     command:
       [
@@ -276,7 +276,7 @@ services:
   frontend-secondary:
     image: 'frontend'
     container_name: 'frontend-secondary'
-    command: [ "./bin/install.sh" ]
+    command: [ "/bin/install.sh" ]
     volumes:
       - "./install.sh:/bin/install.sh"
       - "./consul_config/frontend_config_secondary.hcl:/config/frontend_config.hcl"
@@ -285,7 +285,7 @@ services:
       - ./certificates/:/consul/config/certs/
       - ./chaos.sh:/tmp/chaos.sh
     ports:
-      - '3030:80'
+      - '3030:3000'
     environment:
       - NEXT_PUBLIC_PUBLIC_API_URL=http://public-api:8080
       - SERVICE=frontend

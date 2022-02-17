@@ -62,6 +62,6 @@ acl {
   down_policy = "extend-cache"
 
   tokens {
-    master = "20d16fb2-9bd6-d238-bfdc-1fab80177667"
+    initial_management = "20d16fb2-9bd6-d238-bfdc-1fab80177667"
   }
 }

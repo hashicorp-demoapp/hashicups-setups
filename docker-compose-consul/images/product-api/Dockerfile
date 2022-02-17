@@ -2,9 +2,8 @@ FROM hashicorpdemoapp/product-api:v0.0.20 as base
 
 FROM ubuntu:20.04
 
-
-ENV ENVOY_VERSION=1.18.3
-ENV CONSUL_VERSION=1.11.1
+ENV ENVOY_VERSION=1.20.1
+ENV CONSUL_VERSION=1.11.3
 
 
 COPY --from=base /app/product-api /bin/product-api
