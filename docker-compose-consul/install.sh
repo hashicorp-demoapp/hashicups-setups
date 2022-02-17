@@ -196,9 +196,9 @@ if [ $SERVICE == frontend ]; then
    fi
 
 sleep 1
-echo "Starting nginx...."
-nginx
-while true; do sleep 1; done 
-
+echo "Starting application...."
+cd /app
+/app/node_modules/.bin/next start
 fi
+
 

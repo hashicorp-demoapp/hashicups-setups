@@ -2,8 +2,8 @@ FROM hashicorpdemoapp/public-api:v0.0.6 as base
 
 FROM ubuntu:20.04
 
-ENV ENVOY_VERSION=1.18.3
-ENV CONSUL_VERSION=1.11.1
+ENV ENVOY_VERSION=1.20.1
+ENV CONSUL_VERSION=1.11.3
 
 
 COPY --from=base app/public-api /bin/public-api
