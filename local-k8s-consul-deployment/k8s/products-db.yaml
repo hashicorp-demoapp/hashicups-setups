@@ -12,7 +12,19 @@ spec:
       targetPort: 5432
   selector:
     app: postgres
-
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: postgres
+spec:
+  protocol: 'tcp'
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: postgres
+automountServiceAccountToken: true
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -47,6 +59,8 @@ spec:
               value: postgres
             - name: POSTGRES_PASSWORD
               value: password
+          # only listen on loopback so only access is via connect proxy
+          args: ["-c", "listen_addresses=127.0.0.1"]
           volumeMounts:
             - mountPath: "/var/lib/postgresql/data"
               name: "pgdata"

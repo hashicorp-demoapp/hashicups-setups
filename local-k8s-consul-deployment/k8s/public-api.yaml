@@ -12,6 +12,19 @@ spec:
   selector:
     app: public-api
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: public-api
+automountServiceAccountToken: true
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: public-api
+spec:
+  protocol: "http"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -31,7 +44,6 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/connect-service-upstreams: "products-api:9090, payments:1800"
     spec:
       containers:
         - name: public-api
@@ -43,9 +55,9 @@ spec:
             - name: BIND_ADDRESS
               value: ":8080"
             - name: PRODUCT_API_URI
-              value: "http://localhost:9090"
+              value: "http://product-api:9090"
             - name: PAYMENT_API_URI
-              value: "http://localhost:1800"
+              value: "http://payments:8080"
         - name: jaeger-agent
           image: jaegertracing/jaeger-agent:latest
           imagePullPolicy: IfNotPresent
