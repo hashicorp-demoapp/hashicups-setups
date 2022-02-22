@@ -178,6 +178,7 @@ sleep 5
 fi
 
 if [ $SERVICE == frontend ]; then
+  /app/entrypoint.sh
   echo "Starting the Frontend application..."
   sleep 3
   if [ -f /tmp/svc_frontend_secondary.hcl ]; then
