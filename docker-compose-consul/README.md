@@ -3,6 +3,8 @@
 This Docker Compose solution deploys HashiCups with Consul. HashiCups is deployed redunantly with a secure Consul deployment. This includes mTLS, encrypted Gossip communciation, and the usage of ACLs.
 The Docker images utilized are not publicly available and must be created locally. 
 
+The [Consul and Chaos Engineering tutorial](https://learn.hashicorp.com/tutorials/consul/introduction-chaos-engineering?in=consul/resiliency) utilizes this HashiCups deployment.
+
 ![overview of architecture](overview.png)
 
 To get started, please follow the steps below.

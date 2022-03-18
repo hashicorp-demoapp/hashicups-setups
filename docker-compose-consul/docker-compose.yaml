@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   consul_server_0:
-    image: consul:1.11.3
+    image: consul:1.11.4
     container_name: consul_server_0
     command: [ "consul", "agent", "-config-dir=/config" ]
     volumes:
@@ -19,7 +19,7 @@ services:
       location: primary
 
   consul_server_1:
-    image: consul:1.11.3
+    image: consul:1.11.4
     container_name: consul_server_1
     command: [ "consul", "agent", "-config-dir=/config" ]
     volumes:
@@ -33,7 +33,7 @@ services:
       location: primary
 
   consul_server_2:
-    image: consul:1.11.3
+    image: consul:1.11.4
     container_name: consul_server_2
     command: [ "consul", "agent", "-config-dir=/config" ]
     volumes:
@@ -214,7 +214,7 @@ services:
       location: primary
 
   consul_secondary_server_0:
-    image: consul:1.11.3
+    image: consul:1.11.4
     container_name: consul_secondary_server_0
     command:
       [
@@ -234,7 +234,7 @@ services:
       location: secondary
 
   consul_secondary_server_1:
-    image: consul:1.11.3
+    image: consul:1.11.4
     container_name: consul_secondary_server_1
     command:
       [
@@ -254,7 +254,7 @@ services:
       location: secondary
 
   consul_secondary_server_2:
-    image: consul:1.11.3
+    image: consul:1.11.4
     container_name: consul_secondary_server_2
     command:
       [

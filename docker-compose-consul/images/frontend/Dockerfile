@@ -1,9 +1,9 @@
-FROM hashicorpdemoapp/frontend:v1.0.1 as builder
+FROM hashicorpdemoapp/frontend:v1.0.2 as builder
 
 FROM ubuntu:20.04
 
 ENV ENVOY_VERSION=1.20.1
-ENV CONSUL_VERSION=1.11.3
+ENV CONSUL_VERSION=1.11.4
 
 RUN apt-get update -y && apt-get upgrade -y && \
     apt install -y net-tools bash curl unzip sudo jq wget nano iputils-ping procps postgresql-client
