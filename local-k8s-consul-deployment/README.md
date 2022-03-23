@@ -13,6 +13,7 @@ The initial form of this doc is created for linux/macos users. WSL users should 
     * [Mikube](https://minikube.sigs.k8s.io/docs/start/)
     * [kind](https://kind.sigs.k8s.io/)
     * [k3s](https://k3s.io/)
+ * Install [Consul K8s CL](https://www.consul.io/docs/k8s/installation/install-cli)
 
 
 ## Getting Started
