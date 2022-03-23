@@ -1,10 +1,10 @@
-FROM hashicorpdemoapp/payments:v0.0.14 as base
+FROM hashicorpdemoapp/payments:v0.0.16 as base
 
 FROM ubuntu:20.04
 
 ENV ENVOY_VERSION=1.20.1
 ENV CONSUL_VERSION=1.11.4
-ENV PAYMENTS_VERSION=0.0.14
+ENV PAYMENTS_VERSION=0.0.16
 
 
 COPY --from=base spring-boot-payments-${PAYMENTS_VERSION}.jar /bin/spring-boot-payments.jar

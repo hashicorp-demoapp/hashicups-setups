@@ -1,4 +1,4 @@
-FROM hashicorpdemoapp/frontend:v1.0.2 as builder
+FROM hashicorpdemoapp/frontend:v1.0.3 as builder
 
 FROM ubuntu:20.04
 
