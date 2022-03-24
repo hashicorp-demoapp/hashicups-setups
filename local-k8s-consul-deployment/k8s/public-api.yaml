@@ -12,6 +12,12 @@ spec:
   selector:
     app: public-api
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: public-api
+automountServiceAccountToken: true
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:

@@ -9,7 +9,7 @@ spec:
   ports:
     - name: http
       protocol: TCP
-      port: 80
+      port: 8082
       targetPort: 80
 ---
 apiVersion: v1
@@ -104,8 +104,7 @@ spec:
         app: nginx
       annotations:
         consul.hashicorp.com/connect-inject: "true"
-        # consul.hashicorp.com/connect-service-upstreams: "frontend:3000, products-api:9090, payments:1800, public-api:8080"
-        consul.hashicorp.com/transparent-proxy: "true"
+        consul.hashicorp.com/connect-service-upstreams: "frontend:3000, products-api:9090, payments:1800, public-api:8080"
     spec:
       serviceAccountName: nginx
       volumes:

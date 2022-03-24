@@ -29,7 +29,7 @@ The initial form of this doc is created for linux/macos users. WSL users should 
     ```
 1. Expose the HashiCups UI
     ```
-    kubectl port-forward deploy/nginx 3000:80
+    kubectl port-forward deploy/nginx 8082:80
     ```
 1. Visit http://localhost:8080
 
