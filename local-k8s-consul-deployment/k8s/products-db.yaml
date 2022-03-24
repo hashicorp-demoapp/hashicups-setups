@@ -19,6 +19,13 @@ metadata:
   name: postgres
 automountServiceAccountToken: true
 ---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: postgres
+spec:
+  protocol: "http"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
