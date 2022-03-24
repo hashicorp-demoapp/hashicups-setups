@@ -2,7 +2,7 @@
 
 This deploys HashiCups to a Nomad cluster running locally or remotely.
 
-It does not require Consul or any other mesh tool for service discovery but instead uses static ports for communication between services. 
+It does not require Consul or any other mesh tool for service discovery as it uses static ports for communication between services. 
 
 ## Deploying HashiCups
 There are two ways of deploying HashiCups on Nomad: manually with the [job file](hashicups.nomad) and automatically with [Nomad Pack](https://github.com/hashicorp/nomad-pack#nomad-pack).
