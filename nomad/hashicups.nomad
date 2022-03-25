@@ -12,7 +12,7 @@ variable "region" {
 
 variable "frontend_version" {
   description = "Docker version tag"
-  default = "v1.0.2"
+  default = "v1.0.3"
 }
 
 variable "public_api_version" {
