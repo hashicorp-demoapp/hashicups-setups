@@ -8,7 +8,7 @@ ui:
   enabled: true
 connectInject:
   transparentProxy:
-    defaultEnabled: false
+    defaultEnabled: true
   # inject an envoy sidecar into every new pod, except for those with annotations that prevent injection
   enabled: true
   # these settings enable L7 metrics collection and are new in 1.5

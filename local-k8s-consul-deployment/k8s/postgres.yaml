@@ -48,7 +48,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: hashicorpdemoapp/product-api-db:v0.0.20
+          image: hashicorpdemoapp/product-api-db:v0.0.21
           imagePullPolicy: Always
           ports:
             - containerPort: 5432

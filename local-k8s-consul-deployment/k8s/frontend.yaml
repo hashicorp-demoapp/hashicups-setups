@@ -44,7 +44,6 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/connect-service-upstreams: "public-api:8080"
     spec:
       serviceAccountName: frontend
       containers:
@@ -53,6 +52,10 @@ spec:
           imagePullPolicy: Always
           env:
             - name: NEXT_PUBLIC_PUBLIC_API_URL
-              value: "http://localhost"
+              value: "http://public-api:8080"
           ports:
             - containerPort: 3000
+          # Added for debugging purposes - NOT RECOMMENDED
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 0

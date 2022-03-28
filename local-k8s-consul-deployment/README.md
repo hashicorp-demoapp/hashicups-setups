@@ -22,7 +22,7 @@ The initial form of this doc is created for linux/macos users. WSL users should 
 
 1.  Deploy Consul through the [Consul K8s CLI](https://www.consul.io/docs/k8s/k8s-cli).
     ```
-    consul-k8s install -config-file=helm/consul-values.yaml -set global.image=hashicorp/consul:1.11.4
+    consul-k8s install -auto-approve -config-file=helm/consul-values.yaml -set global.image=hashicorp/consul:1.11.4
     ```
 1.  Deploy HashiCups. Assumption is that you are in the `local-k8s-consul-deployment/` folder.
     ```
@@ -49,6 +49,6 @@ The initial form of this doc is created for linux/macos users. WSL users should 
     ```
 1. Remove all Consul resources
     ```
-    consul-k8s uninstall
+    consul-k8s uninstall -auto-approve &&  kubectl delete pvc/data-consul-consul-server-0 --namespace consul
     ```
 1. Terminate you local kubernetes cluster.

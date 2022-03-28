@@ -10,7 +10,7 @@ spec:
     - name: http
       protocol: TCP
       port: 1800
-      targetPort: 1800
+      targetPort: 8080
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -49,4 +49,4 @@ spec:
           image: hashicorpdemoapp/payments:v0.0.16
           imagePullPolicy: Always
           ports:
-            - containerPort: 1800
+            - containerPort: 8080

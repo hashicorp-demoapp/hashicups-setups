@@ -25,7 +25,7 @@ services:
     ports:
       - '8080:8080'
   product-api:
-    image: 'hashicorpdemoapp/product-api:v0.0.20'
+    image: 'hashicorpdemoapp/product-api:v0.0.21'
     volumes:
       - type: bind
         source: ./conf.json
@@ -35,7 +35,7 @@ services:
     ports:
       - '9090:9090'
   product-db:
-    image: 'hashicorpdemoapp/product-api-db:v0.0.20'
+    image: 'hashicorpdemoapp/product-api-db:v0.0.21'
     ports:
       - '5432:5432'
     environment:

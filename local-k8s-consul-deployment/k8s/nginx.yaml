@@ -61,7 +61,7 @@ data:
           proxy_pass http://frontend_upstream;
 
           # For testing cache - remove before deploying to production
-          add_header X-Cache-Status $upstream_cache_status;
+          # add_header X-Cache-Status $upstream_cache_status;
         }
 
         location /static {
@@ -71,7 +71,7 @@ data:
           proxy_pass http://frontend_upstream;
 
           # For testing cache - remove before deploying to production
-          add_header X-Cache-Status $upstream_cache_status;
+          # add_header X-Cache-Status $upstream_cache_status;
         }
 
         location / {
@@ -79,11 +79,11 @@ data:
         }
 
         location /api {
-          proxy_pass http://localhost:8080;
+          proxy_pass http://public-api:8080;
         }
 
         location /payments {
-          proxy_pass http://localhost:1800;
+          proxy_pass http://payments:1800;
         }
       }
 ---
@@ -104,7 +104,7 @@ spec:
         app: nginx
       annotations:
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/connect-service-upstreams: "frontend:3000, products-api:9090, payments:1800, public-api:8080"
+        # consul.hashicorp.com/connect-service-upstreams: "frontend:3000, products-api:9090, payments:1800, public-api:8080"
     spec:
       serviceAccountName: nginx
       volumes:
