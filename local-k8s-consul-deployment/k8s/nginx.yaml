@@ -100,7 +100,6 @@ spec:
         app: nginx
       annotations:
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/connect-service-upstreams: "frontend:3000, products-api:9090, public-api:8080"
     spec:
       serviceAccountName: nginx
       volumes:

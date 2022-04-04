@@ -49,6 +49,6 @@ The initial form of this doc is created for linux/macos users. WSL users should 
     ```
 1. Remove all Consul resources
     ```
-    consul-k8s uninstall -auto-approve &&  kubectl delete pvc/data-consul-consul-server-0 --namespace consul
+    consul-k8s uninstall -auto-approve -wipe-data &&  kubectl delete pvc/data-consul-consul-server-0 --namespace consul
     ```
 1. Terminate you local kubernetes cluster.

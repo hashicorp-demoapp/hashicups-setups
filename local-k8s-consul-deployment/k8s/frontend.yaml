@@ -44,7 +44,6 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
-        # consul.hashicorp.com/connect-service-upstreams: "public-api:8080"
     spec:
       serviceAccountName: frontend
       containers:
@@ -57,6 +56,6 @@ spec:
           ports:
             - containerPort: 3000
           # Added for debugging purposes - NOT RECOMMENDED
-          securityContext:
-            allowPrivilegeEscalation: false
-            runAsUser: 0
+          # securityContext:
+          #   allowPrivilegeEscalation: false
+          #   runAsUser: 0

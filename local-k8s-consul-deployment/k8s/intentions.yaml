@@ -55,13 +55,13 @@ spec:
   destination:
     name: frontend
 ---
-# apiVersion: consul.hashicorp.com/v1alpha1
-# kind: ServiceIntentions
-# metadata:
-#   name: deny-all
-# spec:
-#   destination:
-#     name: '*'
-#   sources:
-#     - name: '*'
-#       action: deny
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: deny-all
+spec:
+  destination:
+    name: '*'
+  sources:
+    - name: '*'
+      action: deny

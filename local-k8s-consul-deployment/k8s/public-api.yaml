@@ -44,7 +44,6 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
-        # consul.hashicorp.com/connect-service-upstreams: "products-api:9090, payments:1800"
     spec:
       containers:
         - name: public-api
