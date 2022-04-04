@@ -6,13 +6,25 @@ metadata:
   labels:
     app: postgres
 spec:
-  type: ClusterIP
   ports:
     - port: 5432
       targetPort: 5432
+      protocol: TCP
   selector:
     app: postgres
-
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: postgres
+automountServiceAccountToken: true
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: postgres
+spec:
+  protocol: "tcp"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -36,7 +48,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: hashicorpdemoapp/product-api-db:v0.0.20
+          image: hashicorpdemoapp/product-api-db:v0.0.21
           imagePullPolicy: Always
           ports:
             - containerPort: 5432

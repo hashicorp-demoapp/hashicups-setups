@@ -13,15 +13,16 @@ The initial form of this doc is created for linux/macos users. WSL users should 
     * [Mikube](https://minikube.sigs.k8s.io/docs/start/)
     * [kind](https://kind.sigs.k8s.io/)
     * [k3s](https://k3s.io/)
+ * Install [Consul K8s CL](https://www.consul.io/docs/k8s/installation/install-cli)
 
 
 ## Getting Started
 
 1.  Start your local k8s cluster. This may be kind, minikube, k3s, or any other prefered flavor.
 
-1.  Deploy Consul through Helm 
+1.  Deploy Consul through the [Consul K8s CLI](https://www.consul.io/docs/k8s/k8s-cli).
     ```
-    helm install -f helm/consul-values.yaml consul hashicorp/consul --version "0.34.1" --wait
+    consul-k8s install -auto-approve -config-file=helm/consul-values.yaml -set global.image=hashicorp/consul:1.11.4
     ```
 1.  Deploy HashiCups. Assumption is that you are in the `local-k8s-consul-deployment/` folder.
     ```
@@ -29,14 +30,14 @@ The initial form of this doc is created for linux/macos users. WSL users should 
     ```
 1. Expose the HashiCups UI
     ```
-    kubectl port-forward deploy/frontend 8080:80
+    kubectl port-forward deploy/nginx 8082:80
     ```
 1. Visit http://localhost:8080
 
 ## Visit Consul UI (Optional)
 1. Expose the Consul UI
     ```
-    kubectl port-forward pods/consul-server-0 8500:8500
+    kubectl port-forward pods/consul-server-0 8500:8500 --namespace consul
     ```
 1. Visit http://localhost:8500
 
@@ -48,6 +49,6 @@ The initial form of this doc is created for linux/macos users. WSL users should 
     ```
 1. Remove all Consul resources
     ```
-    helm delete consul
+    consul-k8s uninstall -auto-approve -wipe-data &&  kubectl delete pvc/data-consul-consul-server-0 --namespace consul
     ```
 1. Terminate you local kubernetes cluster.
