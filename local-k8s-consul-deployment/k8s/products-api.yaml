@@ -56,6 +56,7 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
+        # consul.hashicorp.com/connect-service-upstreams: "postgres:5432"
     spec:
       serviceAccountName: products-api
       volumes:
@@ -75,14 +76,14 @@ spec:
           env:
             - name: "CONFIG_FILE"
               value: "/config/conf.json"
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 9090
-            initialDelaySeconds: 15
-            timeoutSeconds: 1
-            periodSeconds: 10
-            failureThreshold: 30
+          # livenessProbe:
+          #   httpGet:
+          #     path: /health
+          #     port: 9090
+          #   initialDelaySeconds: 15
+          #   timeoutSeconds: 1
+          #   periodSeconds: 10
+          #   failureThreshold: 30
           volumeMounts:
             - name: config
               mountPath: /config

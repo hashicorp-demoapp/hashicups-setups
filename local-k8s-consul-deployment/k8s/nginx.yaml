@@ -81,10 +81,6 @@ data:
         location /api {
           proxy_pass http://public-api:8080;
         }
-
-        location /payments {
-          proxy_pass http://payments:1800;
-        }
       }
 ---
 apiVersion: apps/v1
@@ -104,7 +100,7 @@ spec:
         app: nginx
       annotations:
         consul.hashicorp.com/connect-inject: "true"
-        # consul.hashicorp.com/connect-service-upstreams: "frontend:3000, products-api:9090, payments:1800, public-api:8080"
+        consul.hashicorp.com/connect-service-upstreams: "frontend:3000, products-api:9090, public-api:8080"
     spec:
       serviceAccountName: nginx
       volumes:
