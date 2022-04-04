@@ -24,7 +24,7 @@ kind: ServiceDefaults
 metadata:
   name: postgres
 spec:
-  protocol: "http"
+  protocol: "tcp"
 ---
 apiVersion: apps/v1
 kind: Deployment

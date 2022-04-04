@@ -5,9 +5,9 @@ metadata:
 spec:
   sources:
     - name: frontend
-      action: allow  
+      action: allow
     - name: nginx
-      action: allow 
+      action: allow
   destination:
     name: public-api
 ---
@@ -20,7 +20,7 @@ spec:
     - name: public-api
       action: allow
   destination:
-    name: products-api 
+    name: products-api
 ---
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceIntentions
@@ -29,9 +29,9 @@ metadata:
 spec:
   sources:
     - name: public-api
-      action: allow  
+      action: allow
   destination:
-    name: payments 
+    name: payments
 ---
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceIntentions
@@ -40,10 +40,10 @@ metadata:
 spec:
   sources:
     - name: products-api
-      action: allow  
+      action: allow
   destination:
-    name: postgres 
---- 
+    name: postgres
+---
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceIntentions
 metadata:
@@ -51,10 +51,10 @@ metadata:
 spec:
   sources:
     - name: nginx
-      action: allow  
+      action: allow
   destination:
-    name: frontend 
----       
+    name: frontend
+---
 # apiVersion: consul.hashicorp.com/v1alpha1
 # kind: ServiceIntentions
 # metadata:
@@ -65,4 +65,3 @@ spec:
 #   sources:
 #     - name: '*'
 #       action: deny
-     

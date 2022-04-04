@@ -52,7 +52,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: NEXT_PUBLIC_PUBLIC_API_URL
-              value: "http://public-api:8080"
+              value: "/"
           ports:
             - containerPort: 3000
           # Added for debugging purposes - NOT RECOMMENDED
