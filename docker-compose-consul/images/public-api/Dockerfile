@@ -1,4 +1,4 @@
-FROM hashicorpdemoapp/public-api:v0.0.6 as base
+FROM hashicorpdemoapp/public-api:v0.0.7 as base
 
 FROM ubuntu:20.04
 
@@ -18,7 +18,7 @@ RUN wget -q https://releases.hashicorp.com/consul/$CONSUL_VERSION/consul_${CONSU
     mv /tmp/consul /bin/consul && \
     wget https://github.com/nicholasjackson/envoy-binaries/releases/download/v${ENVOY_VERSION}/envoy_${ENVOY_VERSION}_linux_amd64.zip && \
     unzip envoy_${ENVOY_VERSION}_linux_amd64.zip -d /tmp/ && \
-    mv /tmp/envoy /bin/envoy 
+    mv /tmp/envoy /bin/envoy
 
 
 CMD ["/bin/public-api"]
