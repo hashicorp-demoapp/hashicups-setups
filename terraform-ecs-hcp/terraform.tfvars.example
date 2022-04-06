@@ -1,0 +1,3 @@
+lb_ingress_ip = "YOUR_PUBLIC_IP"
+region     = "us-east-1"
+name = "learn-hcp"
