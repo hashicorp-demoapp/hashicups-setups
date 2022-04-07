@@ -46,6 +46,7 @@ spec:
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
     spec:
+      serviceAccountName: postgres
       containers:
         - name: postgres
           image: hashicorpdemoapp/product-api-db:v0.0.21

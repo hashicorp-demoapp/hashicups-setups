@@ -45,6 +45,7 @@ spec:
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
     spec:
+      serviceAccountName: public-api
       containers:
         - name: public-api
           image: hashicorpdemoapp/public-api:v0.0.6
