@@ -19,7 +19,7 @@ unzip consul_${CONSUL_VERSION}_linux_amd64.zip -d /tmp/ && \
 mv /tmp/consul /bin/consul && \
 wget https://github.com/nicholasjackson/envoy-binaries/releases/download/v${ENVOY_VERSION}/envoy_${ENVOY_VERSION}_linux_amd64.zip && \
 unzip envoy_${ENVOY_VERSION}_linux_amd64.zip -d /tmp/ && \
-mv /tmp/envoy /bin/envoy 
+mv /tmp/envoy /bin/envoy
 
 
 CMD ["java", "-jar", "/bin/spring-boot-payments.jar"]
