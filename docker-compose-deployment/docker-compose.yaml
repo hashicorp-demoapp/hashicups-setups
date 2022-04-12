@@ -24,16 +24,16 @@ services:
       - 'payments:payments'
     ports:
       - '8080:8080'
-  product-api:
-    image: 'hashicorpdemoapp/product-api:v0.0.20'
-    volumes:
-      - type: bind
-        source: ./conf.json
-        target: /conf.json
-    links:
-      - 'product-db:product-db'
-    ports:
-      - '9090:9090'
+  # product-api:
+  #   image: 'hashicorpdemoapp/product-api:v0.0.20'
+  #   volumes:
+  #     - type: bind
+  #       source: ./conf.json
+  #       target: /conf.json
+  #   links:
+  #     - 'product-db:product-db'
+  #   ports:
+  #     - '9090:9090'
   product-db:
     image: 'hashicorpdemoapp/product-api-db:v0.0.20'
     ports:
@@ -42,5 +42,5 @@ services:
       - POSTGRES_DB=products
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=postgres
-  payments:
-    image: 'hashicorpdemoapp/payments:latest'
+  # payments:
+  #   image: 'hashicorpdemoapp/payments:latest'
