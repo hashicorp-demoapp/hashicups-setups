@@ -9,10 +9,10 @@ For more details on the Terraform code and required values, read [terraform.md](
 - Terraform 1.0.0+
 - AWS Account
 - IAM Permissions to deploy
-- - ECS Cluster
-- - Secrets Manager Secrets
-- - Create IAM ECS Task  roles
-- - Deploy a VPC
+  - ECS Cluster
+  - Secrets Manager Secrets
+  - Create IAM ECS Task  roles
+  - Deploy a VPC
 
 
 ## AWS & HCP Credentials
