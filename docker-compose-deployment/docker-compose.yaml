@@ -3,7 +3,7 @@ services:
   frontend:
     image: 'hashicorpdemoapp/frontend:v1.0.3'
     environment:
-      - NEXT_PUBLIC_PUBLIC_API_URL=http://localhost
+      - NEXT_PUBLIC_PUBLIC_API_URL=/
   nginx:
     image: nginx:alpine
     links:
