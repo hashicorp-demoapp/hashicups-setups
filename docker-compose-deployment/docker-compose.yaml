@@ -4,7 +4,7 @@ services:
     image: 'hashicorpdemoapp/frontend:v1.0.4'
     environment:
       - NEXT_PUBLIC_PUBLIC_API_URL=/
-      - NEXT_PUBLIC_FOOTER_FLAG=REPLACEME
+      - NEXT_PUBLIC_FOOTER_FLAG=HashiCups
   nginx:
     image: nginx:alpine
     links:
