@@ -1,9 +1,10 @@
 version: '3.8'
 services:
   frontend:
-    image: 'hashicorpdemoapp/frontend:v1.0.3'
+    image: 'hashicorpdemoapp/frontend:v1.0.4'
     environment:
       - NEXT_PUBLIC_PUBLIC_API_URL=http://localhost
+      - NEXT_PUBLIC_FOOTER_FLAG=This is the next level.
   nginx:
     image: nginx:alpine
     links:
