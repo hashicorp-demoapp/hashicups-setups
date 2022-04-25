@@ -23,11 +23,23 @@ The frontend service is a React.js application that interacts with the **public-
 
 To purchase a coffee or a set of coffees, the user must log in to the application. HashiCups does not come with a default user id created. Therefore users must make their user through the login option in the righthand side navigation menu.
 
-The frontend service is designed to be a client application. Thus, all API calls from the frontend service will originate from the user's browser. The frontend service can be configured to be consumed with a reverse proxy, so API requests to the **public-api** are sourced from the reverse proxy instance.. An example of this setup is available in the [docker-compose-deployment-reverse-proxy-nginx](../docker-compose-deployment-reverse-proxy-nginx/README.md) folder.
+The frontend service is designed to be a client application. Thus, all API calls from the frontend service will originate from the user's browser. The frontend service can be configured to be consumed with a reverse proxy, so API requests to the **public-api** are sourced from the reverse proxy instance. An example of this setup is available in the [docker-compose-deployment-reverse-proxy-nginx](../docker-compose-deployment-reverse-proxy-nginx/README.md) folder.
+
+The `frontend` service is not dependent on other services to boot up successfully. However, should any of the the downstream services be unavaiable, then the landing page will not display a list of coffees. Instead the user will be shown an error message stating, `Unable to query all coffees
+Check the console for error messages`.
+
+Visit the [frontend](frontend.md) page to learn more about the frontend service and how to configure the service.
 
 ### Public-api service
 
+The **public-api** service is the primary and only target endpoint to which the **front-end** service connects. The **public-api** service is responsible for facilitating API calls to two other downstream services; **product-api**, and the **payments**. The `public-api` is not dependent on other services to boot up successfully. 
+
+The **public-api** handles the authentication logic for HashiCups. Visit the [public-api](public-api.md) page to learn more about the ***public-api** service and how to configure the service.
+
+
 ### Product-api service
+
+
 
 ### Payments service
 
