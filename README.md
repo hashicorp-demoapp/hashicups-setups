@@ -4,7 +4,7 @@ This repository contains various deployment configurations for HashiCups. Use th
 For questions/concerns, please use the `#proj-hashicups` channel.
 
 <p align="center">
-<img src="/public/img/landing_page.pmg" alt="drawing" width="400"/>
+<img src="/public/img/landing_page.png" alt="drawing" width="400"/>
 </p>
 
 ## Documentation
