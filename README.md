@@ -4,14 +4,14 @@ This repository contains various deployment configurations for HashiCups. Use th
 For questions/concerns, please use the `#proj-hashicups` channel.
 
 <p align="center">
-<img src="/public/img/landing_page.png" alt="drawing" width="400"/>
+<img src="/public/img/landing_page.png" alt="drawing" width="800"/>
 </p>
 
 ## Documentation
 
 To learn more about HashiCups and how to use HashiCups, visit the HashiCups documentation [page](/docs/overview.md).
 
-Current Options
+## Deployment Configurations
 
 * [Docker Compose](docker-compose-deployment/README.md) 
 * [Docker Compose w/ Consul and Envoy](docker-compose-consul/README.md)
