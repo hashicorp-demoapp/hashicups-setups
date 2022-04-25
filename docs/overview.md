@@ -34,12 +34,17 @@ Visit the [frontend](frontend.md) page to learn more about the frontend service 
 
 The **public-api** service is the primary and only target endpoint to which the **front-end** service connects. The **public-api** service is responsible for facilitating API calls to two other downstream services; **product-api**, and the **payments**. The `public-api` is not dependent on other services to boot up successfully. 
 
-The **public-api** handles the authentication logic for HashiCups. Visit the [public-api](public-api.md) page to learn more about the ***public-api** service and how to configure the service.
+Visit the [public-api](public-api.md) page to learn more about the ***public-api** service and how to configure the service.
 
 
 ### Product-api service
 
+The **product-api** is a downstream service of the **public-api**, and the service is responsible for interacting with the Postgres database, also known as the **postgres** service.
+The **product-api** is a REST API, unlike the **public-api**, which is a GraphQL API. The main purpose of this API is to query the database for available coffees, create orders, and update/gather the ingredients in a coffee. The **product-api** plays a critical role in the authentication logic. It's the service that validates login information (id/password), and the service is responsible for creating users and storing the user information in the database.  
 
+Unlike other services, the **product-api** cannot boot up successfully if the **postgres** service service is unavailable. We recommend you deploy the **postgres** service before deploying the **product-api** service.
+
+Visit the [product-api](product-api.md) page to learn more about the ***product-api** service and how to configure the service.
 
 ### Payments service
 
