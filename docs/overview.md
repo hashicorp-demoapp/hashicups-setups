@@ -44,12 +44,28 @@ The **product-api** is a REST API, unlike the **public-api**, which is a GraphQL
 
 Unlike other services, the **product-api** cannot boot up successfully if the **postgres** service service is unavailable. We recommend you deploy the **postgres** service before deploying the **product-api** service.
 
-Visit the [product-api](product-api.md) page to learn more about the ***product-api** service and how to configure the service.
+Visit the [product-api](product-api.md) page to learn more about the **product-api** service and how to configure the service.
 
 ### Payments service
 
-The **payments** service supports the fictional payment capabilities of HashiCups. The service accepts credit card information used to process a transaction. The **payments** service is insecure by default. You will see unencrypted credit card information flow in the API calls between the **frontend**, **public-api**, and the **payments** service. The **payments** service can be secured by the usage of HashiCorp Vault. The **payments** service can also be integrated with other storage controllers besides Vault, such as a Redis and a relational database. 
+The **payments** service supports the fictional payment capabilities of HashiCups. The service accepts credit card information used to process a transaction. The **payments** service is insecure by default. You will see plain text credit card information flow in the API calls between the **frontend**, **public-api**, and the **payments** service. The **payments** service can be secured by the usage of HashiCorp Vault. The **payments** service can also be integrated with other storage controllers besides Vault, such as a Redis and a relational database. 
 
- The **payments** service is not dependent on other services to boot up successfully. Visit the [payments](payments.md) page to learn more about the ***product-api** service and how to configure the service.
+ The **payments** service is not dependent on other services to boot up successfully. Visit the [payments](payments.md) page to learn more about the **payments** service and how to configure the service.
 
 ### Postgres service
+
+The **postgres** service is the database that supports the HashiCup's application and enables data retention capabilities. The database contains seven tables that range from coffee ingredients to user tokens. The **postgres** service is seeded with content upon the first bootup. 
+
+ The **postgres** service is not dependent on other services to boot up successfully. Visit the [postgres](postgres.md) page to learn more about the **postgres** service and how to configure the service.
+
+
+ ## Next steps
+
+ Now that you have a better understanding of the microservices that make up HashiCups, you may begin to explore the various example deployments of HashiCups. If you desire to learn more about a specific service, then visit the documentation page for the service.
+
+ - [frontend](frontend.md) 
+ - [public-api](public-api.md)
+ - [product-api](product-api.md)
+ - [payments](payments.md)
+ - [postgres](postgres.md)
+
