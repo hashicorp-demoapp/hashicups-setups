@@ -45,6 +45,7 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
+        consul.hashicorp.com/connect-service-upstreams: "products-api:9090"
     spec:
       serviceAccountName: postgres
       containers:
@@ -60,6 +61,7 @@ spec:
               value: postgres
             - name: POSTGRES_PASSWORD
               value: password
+          args: ["-c", "listen_addresses=*"]
           volumeMounts:
             - mountPath: "/var/lib/postgresql/data"
               name: "pgdata"
