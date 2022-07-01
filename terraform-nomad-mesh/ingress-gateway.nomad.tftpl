@@ -6,8 +6,8 @@ job "hashicups-ingress-gateway" {
         network {
             mode = "host"
             port "frontend" {
-                static = 9005
-                to     = 9005
+                static = 80
+                to     = 80
             }
         }
 
@@ -21,7 +21,7 @@ job "hashicups-ingress-gateway" {
 
                     ingress {
                         listener {
-                            port     = 9005
+                            port     = 80
                             protocol = "http"
                             service {
                                 name  = "hashicups-frontend"
