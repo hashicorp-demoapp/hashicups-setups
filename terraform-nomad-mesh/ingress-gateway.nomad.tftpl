@@ -1,0 +1,36 @@
+job "hashicups-ingress-gateway" {
+    region      = "${nomad_region}"
+    datacenters = ["${datacenter}"]
+
+    group "ingress-gateway" {
+        network {
+            mode = "host"
+            port "frontend" {
+                static = 80
+                to     = 80
+            }
+        }
+
+        service {
+            name = "hashicups-ingress-gateway"
+            port = "9005"
+
+            connect {
+                gateway {
+                    proxy {}
+
+                    ingress {
+                        listener {
+                            port     = 80
+                            protocol = "http"
+                            service {
+                                name  = "hashicups-frontend"
+                                hosts = ["${frontend_url}"]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
