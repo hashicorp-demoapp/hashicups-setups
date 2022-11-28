@@ -27,7 +27,7 @@ for folder in *; do
         if ls -l Dockerfile > /dev/null; then
             echo "------------------------------------"
             echo "Building Docker image for $folder"
-            docker build -qt $folder .
+            docker build --platform=linux/amd64 -qt $folder .
             if [ $? != 0 ]; then
                echo "*****************************************************"
                echo "Error building Docker image for $folder"
