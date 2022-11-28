@@ -183,7 +183,7 @@ if [ $SERVICE == frontend ]; then
    sleep 3
    if [ -f /tmp/svc_frontend_secondary.hcl ]; then
       consul services register /tmp/svc_frontend_secondary.hcl &&
-         consul config write /tmp/frontend_secondary.hcl
+         consul config write /tmp/frontend.hcl
    else
       echo "In primary"
       consul services register /tmp/svc_frontend.hcl &&
