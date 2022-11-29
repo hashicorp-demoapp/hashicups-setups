@@ -102,7 +102,7 @@ if [ $SERVICE == product-api ]; then
          nohup /bin/product-api >/api.out 2>&1 &
          consul config write /tmp/product-api.hcl
          consul config write /tmp/intention.hcl
-         nohup consul connect envoy -sidecar-for $SERVICE >/tmp/proxy.log 2>&1
+         nohup consul connect envoy -sidecar-for $SERVICE-secondary >/tmp/proxy.log 2>&1
       else
          sleep 1
          echo "echo after secondary sleep"
