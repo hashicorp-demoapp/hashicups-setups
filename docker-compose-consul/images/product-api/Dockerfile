@@ -1,4 +1,4 @@
-FROM hashicorpdemoapp/product-api:v0.0.21 as base
+FROM hashicorpdemoapp/product-api:v0.0.22 as base
 
 FROM ubuntu:20.04
 
