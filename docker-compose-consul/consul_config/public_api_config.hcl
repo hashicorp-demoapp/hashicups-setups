@@ -10,7 +10,7 @@ retry_join = [
 
 enable_local_script_checks = true
 ports {
-  grpc = 8502
+  grpc_tls = 8502
 }
 encrypt="Pckc6EF8EUt19xrIaavtcRItHzJ3ZD2ZWtaNThc8FOs="
 enable_central_service_config = true

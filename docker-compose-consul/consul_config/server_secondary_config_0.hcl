@@ -27,7 +27,7 @@ bind_addr = "0.0.0.0"
 client_addr = "0.0.0.0"
 
 ports {
-  grpc = 8502
+  grpc_tls = 8502
 }
 
 connect {
