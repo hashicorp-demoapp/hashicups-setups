@@ -178,7 +178,7 @@ if [ $SERVICE == product-db ]; then
 fi
 
 if [ $SERVICE == frontend ]; then
-   /app/entrypoint.sh
+   /app/entrypoint-nginx.sh
    echo "Starting the Frontend application..."
    sleep 3
    if [ -f /tmp/svc_frontend_secondary.hcl ]; then
@@ -199,5 +199,5 @@ if [ $SERVICE == frontend ]; then
    sleep 1
    echo "Starting application...."
    cd /app
-   /app/node_modules/.bin/next start
+   /usr/sbin/nginx -g "daemon off;"
 fi
