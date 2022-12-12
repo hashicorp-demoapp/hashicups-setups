@@ -1,5 +1,5 @@
 set time zone 'UTC';
---create extension pgcrypto;
+create extension pgcrypto;
 
 CREATE TABLE coffees (
     id serial PRIMARY KEY,
