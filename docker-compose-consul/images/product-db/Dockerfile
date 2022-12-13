@@ -1,7 +1,7 @@
 FROM postgres:13
 
-ENV ENVOY_VERSION=1.20.1
-ENV CONSUL_VERSION=1.11.4
+ENV ENVOY_VERSION=1.24.0
+ENV CONSUL_VERSION=1.14.1
 
 
 COPY products.sql /docker-entrypoint-initdb.d/

@@ -21,7 +21,7 @@ service {
    check {
      id =  "Public_API_Check",
      name = "public-api status check",
-     service_id = "public-api",
+     service_id = "public-api-secondary",
      tcp  = "localhost:8080",
      interval = "1s",
      timeout = "1s"

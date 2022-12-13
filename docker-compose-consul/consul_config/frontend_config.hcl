@@ -11,7 +11,7 @@ encrypt = "Pckc6EF8EUt19xrIaavtcRItHzJ3ZD2ZWtaNThc8FOs="
 enable_local_script_checks = true
 enable_central_service_config = true
 ports {
-  grpc = 8502
+  grpc_tls = 8502
 }
 
 auto_encrypt {
@@ -23,8 +23,8 @@ verify_outgoing        = true
 verify_server_hostname = true
 
 ca_file = "/consul/config/certs/consul-agent-ca.pem"
-cert_file = "consul/config/certs/dc1-client-consul-0.pem"
-key_file  = "consul/config/certs/dc1-client-consul-0-key.pem"
+cert_file = "/consul/config/certs/dc1-client-consul-0.pem"
+key_file  = "/consul/config/certs/dc1-client-consul-0-key.pem"
 
 acl {
   enabled = true

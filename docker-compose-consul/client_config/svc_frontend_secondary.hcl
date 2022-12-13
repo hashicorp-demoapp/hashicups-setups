@@ -1,7 +1,7 @@
 service {
   name = "frontend"
   id = "frontend-secondary"
-  port = 3000
+  port = 80
  
   connect {
     sidecar_service {
@@ -18,8 +18,8 @@ service {
    check {
      id =  "Frontend-Secondary",
      name = "Frontend status check",
-     service_id = "frontend",
-     tcp  = "localhost:3000",
+     service_id = "frontend-secondary",
+     tcp  = "localhost:80",
      interval = "1s",
      timeout = "3s"
   }
