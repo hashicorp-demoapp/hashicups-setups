@@ -1,0 +1,7 @@
+datacenter     = "dc1"
+nomad_region   = "global"
+consul_token   = "fakef991-1111-e781-0185-a22f647782a4"
+consul_address = "http://localhost:8500"
+nomad_address  = "http://localhost:4646"
+nomad_token    = "fakeed89-222-0b16-e791-4ac15e9058fe"
+frontend_url   = "hashicups-frontend.ingress.consul"
