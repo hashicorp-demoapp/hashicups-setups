@@ -8,5 +8,6 @@ Current Options
 * [AWS ECS with HCP](terraform-ecs-hcp/README.md)
 * [AWS ECS with HCP + Boundary](terraform-aws-hcp-ecs/README.md)
 * [Nomad](nomad/README.md)
+* [Nomad with consul connect](nomad-consul-connect/README.md)
 
 Navigate to the appropriate folder and follow the README.
