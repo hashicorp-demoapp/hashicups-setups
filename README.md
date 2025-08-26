@@ -1,6 +1,17 @@
 ## Hashicups Setup Options w/ Instructions
 
-Current Options
+This repository contains various deployment configurations for HashiCups. Use the example code as a starting point for your HashiCups use case.
+For questions/concerns, please use the `#proj-hashicups` channel.
+
+<p align="center">
+<img src="/public/img/landing_page.png" alt="drawing" width="800"/>
+</p>
+
+## Documentation
+
+To learn more about HashiCups and how to use HashiCups, visit the HashiCups documentation [page](/docs/overview.md).
+
+## Deployment Configurations
 
 * [Docker Compose](docker-compose-deployment/README.md) 
 * [Docker Compose w/ Consul and Envoy](docker-compose-consul/README.md)
