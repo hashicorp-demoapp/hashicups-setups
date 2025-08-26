@@ -1,0 +1,252 @@
+job "hashicups" {
+    type        = "service"
+    region      = "${nomad_region}"
+    datacenters = ["${datacenter}"]
+
+    group "db" {
+        network {
+            mode = "bridge"
+            port "envoy_metrics" {
+                to = 9102
+            }
+        }
+        task "db" {
+            driver = "docker"
+            meta {
+                service = "database"
+            }
+            config {
+                image = "hashicorpdemoapp/product-api-db:${product_api_db_version}"
+            }
+            env {
+                POSTGRES_DB               = "${postgres_db}"
+                POSTGRES_USER             = "${postgres_user}"
+                POSTGRES_PASSWORD         = "${postgres_password}"
+            }
+        }
+        service {
+            name = "hashicups-db"
+            port = "5432"
+
+            meta {
+                envoy_metrics_port = "$${NOMAD_HOST_PORT_envoy_metrics}"
+            }
+
+            connect {
+                sidecar_service {
+                    proxy {
+                        config {
+                            envoy_prometheus_bind_addr = "0.0.0.0:9102"
+                        }
+                    }
+                }
+            }
+        }
+    }
+    group "product-api" {
+        network {
+            mode = "bridge"
+            port "envoy_metrics" {
+                to = 9102
+            }
+        }
+
+        task "product-api" {
+            driver = "docker"
+            meta {
+                service = "product-api"
+            }
+            config {
+                image = "hashicorpdemoapp/product-api:${product_api_version}"
+                ports = ["product_api"]
+            }
+            env {
+                CONFIG_FILE = "local/config.json"
+            }
+            template {
+                data        = <<EOT
+{
+    "db_connection": "host=127.0.0.1 port=5432 user=${postgres_user} password=${postgres_password} dbname=${postgres_db} sslmode=disable",
+    "bind_address": "0.0.0.0:${product_api_port}",
+    "metrics_address": "0.0.0.0:9103"
+}
+EOT
+                destination = "local/config.json"
+            }
+        }
+        service {
+            name = "hashicups-product-api"
+            port = "${product_api_port}"
+
+            meta {
+                envoy_metrics_port = "$${NOMAD_HOST_PORT_envoy_metrics}"
+            }
+
+            connect {
+                sidecar_service {
+                    proxy {
+                        upstreams {
+                            destination_name = "hashicups-db"
+                            local_bind_port  = 5432
+                            mesh_gateway {
+                                mode = "local"
+                            }
+                        }
+                        config {
+                            envoy_prometheus_bind_addr = "0.0.0.0:9102"
+                        }
+                    }
+                }
+            }
+        }
+    }
+    group "payment-api" {
+        network {
+            mode = "bridge"
+            port "envoy_metrics" {
+                to = 9102
+            }
+        }
+        task "payments-api" {
+            driver = "docker"
+            meta {
+                service = "payments-api"
+            }
+            config {
+                image = "hashicorpdemoapp/payments:${payments_version}"
+                mount {
+                    type   = "bind"
+                    source = "local/application.properties"
+                    target = "/application.properties"
+                }
+            }
+            template {
+                data        = "server.port=${payments_api_port}"
+                destination = "local/application.properties"
+            }
+            resources {
+                cpu    = 200
+                memory = 512
+            }
+        }
+        service {
+            name = "hashicups-payment-api"
+            port = "${payments_api_port}"
+
+            meta {
+                envoy_metrics_port = "$${NOMAD_HOST_PORT_envoy_metrics}"
+            }
+
+            connect {
+                sidecar_service {
+                    proxy {
+                        config {
+                            envoy_prometheus_bind_addr = "0.0.0.0:9102"
+                        }
+                    }
+                }
+            }
+        }
+    }
+    group "public-api" {
+        network {
+            mode = "bridge"
+            port "envoy_metrics" {
+                to = 9102
+            }
+        }
+        task "public-api" {
+            driver = "docker"
+            meta {
+                service = "public-api"
+            }
+            config {
+                image = "hashicorpdemoapp/public-api:${public_api_version}"
+            }
+            env {
+                BIND_ADDRESS    = ":${public_api_port}"
+                PRODUCT_API_URI = "http://$${NOMAD_UPSTREAM_ADDR_hashicups-product-api}"
+                PAYMENT_API_URI = "http://$${NOMAD_UPSTREAM_ADDR_hashicups-payment-api}"
+            }
+        }
+        service {
+            name = "hashicups-public-api"
+            port = "${public_api_port}"
+
+            meta {
+                envoy_metrics_port = "$${NOMAD_HOST_PORT_envoy_metrics}"
+            }
+
+            connect {
+                sidecar_service {
+                    proxy {
+                        upstreams {
+                            destination_name = "hashicups-payment-api"
+                            local_bind_port  = 8080
+                            mesh_gateway {
+                                mode = "local"
+                            }
+                        }
+                        upstreams {
+                            destination_name = "hashicups-product-api"
+                            local_bind_port  = 9090
+                            mesh_gateway {
+                                mode = "local"
+                            }
+                        }
+                        config {
+                            envoy_prometheus_bind_addr = "0.0.0.0:9102"
+                        }
+                    }
+                }
+            }
+        }
+    }
+    group "frontend" {
+        network {
+            mode = "bridge"
+            port "envoy_metrics" {
+                to = 9102
+            }
+        }
+        task "frontend" {
+            driver = "docker"
+            meta {
+                service = "frontend"
+            }
+            env {
+                NEXT_PUBLIC_FOOTER_FLAG    = "<--> Custom footer flag. <-->"
+                NEXT_PUBLIC_PUBLIC_API_URL = "/"
+                PORT                       = "${frontend_port}"
+            }
+            config {
+                image = "hashicorpdemoapp/frontend:${frontend_version}"
+            }
+        }
+        service {
+            name = "hashicups-frontend"
+            port = "${frontend_port}"
+
+            meta {
+                envoy_metrics_port = "$${NOMAD_HOST_PORT_envoy_metrics}"
+            }
+
+            connect {
+                sidecar_service {
+                    proxy {
+                        upstreams {
+                            destination_name = "hashicups-public-api"
+                            local_bind_port  = 8081
+                            mesh_gateway {
+                                mode = "local"
+                            }
+                        }
+                        config {
+                            envoy_prometheus_bind_addr = "0.0.0.0:9102"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
